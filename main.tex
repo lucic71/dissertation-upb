@@ -1,0 +1,40 @@
+\documentclass[journal]{IEEEtran}
+\input{incl}
+\begin{document}
+
+\title{Analysis of Speedup Gain of Undefined Behavior Optimizations in
+OpenBSD}
+
+\author{%%%% author names
+    \IEEEauthorblockN{1\textsuperscript{st} Lucian-Ioan Popescu}% first author
+    \\
+    \IEEEauthorblockA{\textit{CS Department, Politehnica University of
+Bucharest}}\\% first affiliation
+    \IEEEauthorblockA{lucian.popescu187@gmail.com}
+}
+
+\maketitle
+\todo{TODO LIST:
+1. talk a little bit more about programmer intentionality to make it
+clear what do you mean by that
+2. talk about openbsd and how they are ready to accept compiler
+modifications into the system (see how they disabled bluetooth,
+hyperthreading, etc)
+3. talk about why we conduct our tests on oses? because the primordial
+role of c is to write oses
+}
+
+% Subtleties of the ANSI/ISO C standard
+\input{abstract}
+\input{intro}
+\input{backg}
+\input{relwork}
+\input{contr}
+\input{concl}
+
+\todo{put the links in the references; solve the lowercase issues, eg
+cflags}
+\bibliographystyle{plain}
+\bibliography{bib}
+
+\end{document}

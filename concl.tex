@@ -1,0 +1,14 @@
+\section{Conclusions} \label{sec:ccl}
+
+The definition of undefined behavior is used by compiler
+implementations to issue aggressive optimizations. We argue that this
+class of optimization is very dangerous as it conflicts with programmer
+intentionality and with a robust definition of code semantics. In this
+study analyze the performance impact of undefined behavior optimizations
+in real-life software projects. By doing so we evaluate if the
+advantages of issuing UB optimizations surpass the security risks that
+they introduce. In order to do this we take a robust and secure
+implementation of operating system, i.e. OpenBSD, and compare the system
+that contains UB optimizations with the same system without UB
+optimizations. The comparison is done on multiple hardware architectures
+to inspect what role UB optimizations have for various hardware setups.

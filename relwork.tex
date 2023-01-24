@@ -1,0 +1,23 @@
+\section{Related Work} \label{sec:rl}
+%% I want to talk in this section about:
+%%  - work of Ertl
+%%  - work of Wang et al.
+%%  - how iso c became unusable for os dev
+%%  - ubs that are used for optimizations
+
+Little work has been done in the area of detecting the performance
+speedup of UB optimizations in real-life software projects. Wang et
+al.~\cite{wang2012undefined} and Ertl~\cite{ertl2015every} provide
+metrics for this class of optimizations based on SPECint benchmark.
+
+Wang et al. state that they observed a decrease in performance of $7.2\%$
+with GCC and $9.0\%$ with Clang for 456.hammer and $6.3\%$ with GCC and
+$11.8\%$ with Clang for 462.libquantum. The experiments were conducted
+with UB optimizations turned off.
+
+Ertl states that with Clang-3.1 and UB optimizations turned on the
+speedup factor is $1.017$ for SPECint 2006. Furthermore, for a specific
+class of programs, i.e. Jon Bentley's traveling salesman problem, the
+speedup factor can reach values greater than $2.7$ if the programmer
+issues source-level optimizations by hand, surpassing the UB
+optimizations issued by the compiler.
