@@ -1,30 +1,35 @@
-\documentclass[journal]{IEEEtran}
+% vim: set tw=78 sts=2 sw=2 ts=8 aw et ai:
+
+\documentclass[12pt]{article}
 \input{incl}
 \begin{document}
 
-\title{Analysis of Speedup Gain of Undefined Behavior Optimizations in
-OpenBSD}
 
-\author{%%%% author names
-    \IEEEauthorblockN{1\textsuperscript{st} Lucian-Ioan Popescu}% first author
-    \\
-    \IEEEauthorblockA{\textit{CS Department, Politehnica University of
-Bucharest}}\\% first affiliation
-    \IEEEauthorblockA{lucian.popescu187@gmail.com}
-}
+\title{Analysis of the Performance Gains of Undefined Behavior
+Optimizations}
+
+\author[*]{Lucian Popescu}
+\author[**]{Nuno Lopes}
+\author[*]{Razvan Deaconscu}
+\affil[*]{Department of Computer Science, Univesity POLITEHNICA of
+Bucharest}
+\affil[**]{Instituto Superior Tecnico, Universidade de Lisaboa}
+\affil[*]{\textit {lucian\_ioan.popescu@stud.acs.upb.ro,
+razvan.deaconescu@cs.pub.ro}}
+\affil[**]{\textit {nuno.lopes@tecnico.ulisboa.pt}}
+
+\renewcommand\Authands{ and }
+
+%%\author{Lucian-Ioan Popescu, Robert Roe\\
+%%Faculty of Automatic Control and Computers\\
+%%University POLITEHNICA of Bucharest\\
+%%Splaiul Independenței 313, Bucharest, Romania, 060042 \\
+%%\emph{\{lucian\_ioan.popescu,robert.roe\}@stud.acs.upb.ro}}
+
+\date{\today}
 
 \maketitle
-\todo{TODO LIST:
-1. talk a little bit more about programmer intentionality to make it
-clear what do you mean by that
-2. talk about openbsd and how they are ready to accept compiler
-modifications into the system (see how they disabled bluetooth,
-hyperthreading, etc)
-3. talk about why we conduct our tests on oses? because the primordial
-role of c is to write oses
-}
 
-% Subtleties of the ANSI/ISO C standard
 \input{abstract}
 \input{intro}
 \input{backg}
@@ -34,7 +39,8 @@ role of c is to write oses
 
 \todo{put the links in the references; solve the lowercase issues, eg
 cflags}
-\bibliographystyle{plain}
+
+\bibliographystyle{abbrv}
 \bibliography{bib}
 
 \end{document}
