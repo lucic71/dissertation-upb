@@ -1,39 +1,51 @@
 \section{Context and motivation}
 
-\todo{add a more general paragraph about c, ub and optimizations}
-\todo{decide on which aspect you want to focus, either semantics of the
-code or the intention of the progammer. the first gives a more formal
-perspective of the problem which i dont think i want to tackle, the
-secnod gives a more relaxed view of the problem, however i dont know how
-to do science with that. i mean, how do you measure "the intention of
-the programmer"?}
+The ISO C Standard~\cite{iso90} provides a definition of undefined
+behavior that gives absolute freedom to compiler implementation when
+erroneous program constructs, erroneous data or indeterminately-valued
+objects are encountered. This allows various compilers to treat
+undefined behavior in different ways while still being standard
+conformant. For example, signed overflow is undefined behavior as there
+are multiple ways of treating it based on the target architecture. On
+MIPS and DEC Alpha the ADD and ADDV instructions trap while on IA-32 the
+ADD instruction performs second's complement wrapping.
 
-The C90~\cite{iso90} standard provides an ambiguous definition of
-undefined behavior. This permits compiler implementations to abuse the
-definition and use it as a mean to issue aggressive optimizations that
-break non-trivial pieces of code in real-life software. Code that works
-with a lower level of optimization is broken when the optimization level
-is elevated. Furthermore code that works on previous versions of the
-compiler is suddenly broken in newer versions because the standard
-imposes virtually no requirements on undefined behavior.
+The freedom that undefined behavior supplies also gives birth to
+compiler opitmizations. The main philosophy here is that a program that
+triggers undefined behavior for some input is incorrect. The compiler
+can assume that the program it is gives is always correct and so, it
+takes advantage of undefined behavior by assuming it never happens. The
+following piece of code:~\textit{\(if (a + c < a + b)\)} can be
+transformed, in this case, into the following piece of
+code:~\textit{\(if (c < b)\)}, assuming that the addition is signed.
+This is possible because signed oveflow is undefined, as discussed, and
+the compiler is free to infer the addition property of inequality.
 
-\todo{add the other mitre integer overflow vulnerabilities from
-blackhat}
-This has created serious security problems throughout the
-years~\cite{wang2012undefined,checks2008,funnull,mitre20200452}. A
-number of initiatives to solve this problem were started from different
-parties~\cite{google2015,regehr2014,wang2013towards,d2015correctness}
-however the problem still persists. The primary open source programmer
-groups have seized the unsteady definition of undefined behavior to
-justify dangerous silent code optimizations that break code from
-operating systems and other types of software projects.
+\todo{find concrete examples for HPC}
 
-An historical example of UB optimization can be found in
-Listing~\ref{lst:junk}. srandomdev(3) is a common function used in BSD
-systems for random number generation. It makes use of uninitialized
-memory for generating randomness. This is a typical case of undefined
-behavior and its consequences are best seen in the difference of the
-generated code by two different compilers.
+In Operating Systems things behave differently than in the case of High
+Performance Computing. Operating Systems are part of a class of programs
+that are not CPU bound hence might not benefit from the performance
+advantages of undefined behavior. Instead they make part of the class of
+programs where security and robustness play an important role. Because
+of this, undefined behavior optimizations must be carefully analyzed so
+that they do not introduce security issues, as Linus Torvalds
+noted~\cite{linusgcc}:
+\begin{displayquote}
+Performance doesn't come from occasional small and odd
+micro-optimizations. I care about performance a lot, and I actually look
+at generated code and do profiling etc. None of those three options
+[-fno-strict-overflow, -fno-strict-aliasing,
+-fno-deletel-null-pointer-checks] have *ever* shown up as issues. But
+the incorrect code they generate? It has.
+\end{displayquote}
+
+The problems Torvalds complains about are often encountered in the field
+of Operating Systems. One of the most well known security issue found
+due to undefined behavior optimizations was found in BSD systems.
+Listing~\ref{lst:junk} presents a historical snippet of code from
+srandomdev(3), a function that initializes the random number generator
+of the system.
 
 \begin{lstlisting}[style=Cstyle, caption={srandom function in
 lib/libc/stdlib/random.c on BSD systems}, label={lst:junk}]
@@ -49,6 +61,11 @@ srandomdev(void)
 	...
 }
 \end{lstlisting}
+
+It makes use of unitialized memory, through junk, for generating
+randomness. This is a typical case of undefined behavior and its
+consequences are best seen in the difference of the generated code by
+two different compilers.
 
 By inspecting \path{/usr/lib/libSystem.B.dylib} in Mac OS X 10.6 we see
 the following generated code for Listing~\ref{lst:junk}:
@@ -66,11 +83,12 @@ xorl    %ebx,%edi
 callq   0x00142d68      ; symbol stub for: _srandom
 \end{lstlisting}
 
-The generated code keeps the assumption of the programmer intact and the
-compiler does not reason about the optimizations it can trigger on the
-corresponding code. In the next version of the same operating system,
-i.e. Mac OS X 10.7, the same file has the following generated code:
+The compiler allocates a slot on the stack for junk and interprets that
+slot as the value of the junk variable that will be used in the srandom
+argument computation. 
 
+In the next version of the same operating system, i.e. Mac OS X 10.7,
+the same file has the following generated code:
 \begin{lstlisting}[style=Cstyle, caption={}, label={lst:junk}]
 leaq    0xd8(%rbp),%rdi
 xorl    %esi,%esi
@@ -79,7 +97,7 @@ callq   0x000a3882      ; symbol stub for: _getpid
 callq   0x000a4752      ; symbol stub for: _srandom
 \end{lstlisting}
 
-The newer version discarded the seed computation as an optimization,
+The newer version discards the seed computation as an optimization,
 generating code that calls gettimeofday and getpid but not using their
 values. Furthermore srandom is called with some garbage value that does
 not depend on the expression declared in the corresponding C code.
@@ -87,75 +105,31 @@ not depend on the expression declared in the corresponding C code.
 This change in the generated source code happened at approximately the
 same time at which Apple decided to not use GCC anymore due to license
 problems and switched to Clang/LLVM. Meanwhile, BSD systems solved this
-problem and srandomdev used defined behavior for generating random
-nubmers.
+problem and srandomdev(3) uses defined behavior for generating random
+numbers. [citation needed]
 
-This philosophy is very dangerous in terms of programming expressivity.
-The compiler has very little context of what the programmer wants to
-accomplish with a specific piece of code. As we saw in the above
-example, the compiler makes the assumption that using an unitialized
-piece of memory makes no sense and discards the expression inside
-srandom. On the same note the compiler cannot make the distinction
-between a read from an uninitialized memory region that might produce
-unspecified results and a read from a memory mapped device that cannot
-be written in order to initialize it. Or it cannot distinguish between
-an erroneous floating pointer access to an integer variable and a smart
-method of computing an arithmetic function~\cite{lomont2003fast}. The
-general principle is that the programmer has the responsibility to
-decide what the code should do, the job of the compiler is to translate
-the code into machine readable instructions and to apply optimizations
-only on code that has defined behavior.
+In this context, it is important to analyze for each class of programs
+what are the advantages and the disadvantages of undefined behavior
+optimizations issued by the compiler based on the requirements of the
+class. Wang et al.~\cite{wang2012undefined} started the work in this
+field by analyzing the preformance of GCC and Clang with a limited set
+of disabled undefined behavior optimizations on SPECint 2006 benchmark.
+We take their work one step further and analyze the advantages and
+disadvantages for real-life software.
 
-The argument of the people that defend this UB optimizations is
-that C code that contains undefined behavior has no meaning and the
-compiler is free to do various types of modifications on it. In Control
-Theory terms, such a system is described by a low degree of
-controllability and observability. Which is paradoxical in the
-philosophy described above where the compiler forcefully takes the
-responsibility, from the programmer, of generating relevant code. The
-implications of this are that no meaningful engineering can be done in
-this framework where processes inside a compiler cannot be understood
-and analyzed.
+To achieve our goals, we take Clang/LLVM and disable all undefined
+behavior optimizations, e.g signed overflow optimizations, null access
+optimizaitions, oversized shift optimizations, etc. We do the
+modifications either through the already accessible compiler flags
+or by changing the internals of the compiler. The end result will be a
+modified compiler free of undefined behavior optimizations that will be
+used to test the advantages and disadvantages for each class of
+programs.
 
-The situation has created an adversarial view of the compiler.
-Programmers are forced to modify the default behavior of the compiler
-with flags such as -fno-delete-null-checks, -ftrapv,
--fno-strict-aliasing, -ftrapv so that they can impose strong
-requirements on the code generated by the compiler. This in turn creates
-a more complicated development environment.
+The metric we use for assessing the advantages and disadvantages is
+performance. The performance may include, but it is not limited to, code
+size and code speed. We take examples from each class of programs and
+create benchmarks that show how the performance has changed based on the
+modifications done in the compiler.
 
-Another argument that defends the aggressive optimizations view is that
-code generated by these compilers runs faster on artificial
-benchmarks~\cite{gcc10benck,gcc11bench}. This does not necessarily hold
-for real-life software projects that differ in complexity from the
-artificial benchmarks and that make use of non-trivial code constructs.
-Ertl~\cite{ertl2015every} makes an interesting observation regarding the
-performance of UB optimizations. He notes that source level changes buy
-greater speedup factors than UB optimizations for certain classes
-of programs. While his research in this field is valuable, the
-limitation of his work is that he draws conclusions based on SPECint
-benchmarks. This type of benchmarks provide code with defined behavior.
-
-The contribution of this work is that we analyze the speedup factors of
-UB optimizations for real-life software projects, such as operating
-systems, in particular OpenBSD. We choose OpenBSD because it is a
-self-contained robust and secure implementation of operating system.
-The system emphasizes "portability, standardization, correctness,
-proactive security [...]"~\cite{obsdmainp}, goals that are shared with
-our philosophy of generating code that does not make assumptions about
-undefined behaviors.
-
-Finally, by running this experiment we provide a trade off
-analysis between the performance gained using UB optimizations and the
-risks of issuing them. Performance in this context has two meanings. On
-one hand we are interested in seeing how fast the code is running and on
-the other hand we are interested in the size of the generated code.
-
-This paper is structured as follows. Section~\ref{sec:bg} presents a
-background on UB optimizations with examples, risks and incomplete
-solutions for solving the risk they introduce. Section~\ref{sec:rl}
-describes previous results in analyzing the performance gain of UB
-optimizations.  Section~\ref{sec:rp} introduces our research plan that
-focuses on removing UB from OpenBSD and analyzing the performance of the
-system. Finally, Section~\ref{sec:ccl} summarizes our research
-proposal.
+This study is structured as follows. [needs reformulaiton]
