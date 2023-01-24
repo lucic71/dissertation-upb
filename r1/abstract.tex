@@ -1,20 +1,15 @@
 \begin{abstract} 
 \noindent
-The ISO C Standard added the undefined behavior notion as a mean to
-portability. State-of-the-art compilers such as GCC and Clang/LLVM use
-it to issue aggressive optimizations that break non-trivial pieces of
-code used in real-life software. We argue that the performance impact
-of undefined behavior (UB) optimizations in operating systems, such as
-OpenBSD, is low.  Furthermore they introduce unobservable and
-undocumented effects that have great impact of program robustness and
-security. To test our hypothesis we take the compiler implementation
-used in OpenBSD, i.e.  Clang/LLVM, and disable all undefined behavior
-optimizations. Then we compare the performance of the system on multiple
-hardware architectures with the above mentioned optimizations turned on
-and off.
+State-of-the-art compilers, such as GCC and Clang/LLVM, use undefined
+behavior to issue optimizations. These optimizations may boost the
+performance of specific classes of programs, such as High Performance
+Computing. In contrast, other classes of programs, such as Operating
+Systems, might not benefit from the performance advantages of undefined
+behavior optimizations. In the latter case, disadvantages emerge in the
+form of security vulnerabilities. In this study we analyze the
+advantages and disadvantages of undefined behavior optimizations
+for various classes of programs. To achieve this we take Clang/LLVM and
+disable all undefined behavior optimizations. Then we analyze the
+preformance impact for each class of application using suitable
+benchmarks.
 \end{abstract}
-
-%% \begin{IEEEkeywords}
-%%    compiler, optimization, undefined behavior, operating system
-%% \end{IEEEkeywords}
-
