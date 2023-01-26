@@ -84,7 +84,7 @@ two different compilers.
 
 By inspecting \path{/usr/lib/libSystem.B.dylib} in Mac OS X 10.6 we see
 the following generated code for Listing~\ref{lst:junk}:
-\begin{lstlisting}[style=Cstyle, caption={}, label={lst:junk}]
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
 leaq    0xe0(%rbp),%rdi
 xorl    %esi,%esi
 callq   0x001422ca      ; symbol stub for: _gettimeofday
@@ -104,7 +104,7 @@ argument computation.
 
 In the next version of the same operating system, i.e. Mac OS X 10.7,
 the same file has the following generated code:
-\begin{lstlisting}[style=Cstyle, caption={}, label={lst:junk}]
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
 leaq    0xd8(%rbp),%rdi
 xorl    %esi,%esi
 callq   0x000a427e      ; symbol stub for: _gettimeofday
