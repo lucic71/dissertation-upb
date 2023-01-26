@@ -50,6 +50,7 @@ Next, we will cover some \todo{be more specific} cases of undefined
 behavior optimizations illustrating on one hand their advantages and on
 the other hand their disadvantages.
 
+\todo{talk about that mail discussed with Nuno about nsw}
 The signed integer overflow optimization is the most famous undefined
 behavior optimization. C compilers are unable to generate fast code for
 architectures where the size of int is different from the register
@@ -164,3 +165,24 @@ deleted and the page that contains NULL is mapped then the function does
 neither return a POLLERR nor generates a segmentation violation. In this
 point the system is vulnerable as an attacker could inject dangerous
 information in the page where NULL is present.
+
+\todo{microbenchmark is not such a good term, maybe syntetical benchmark
+would be a better name}
+The types of undefined behavior optimizations presented in this section
+are usually tested on microbenchmarks when they make their way into the
+compiler. These benchmarks cannot cover the full effects of the
+optimizations. Because of that their effects are best understood when
+programmers start to use the optimizations in real-life software.
+However this approach is not beneficial as real-life software differs in
+complexity from the benchmarks on which the optimizations were initially
+tested.
+
+This causes a discrepancy between the expected results of the
+optimizations and the actual results. Furthermore, different programs
+have different performance requirements and the role of undefined
+behavior optimizations is not very well understood in this context.
+
+To fill this gap, the current study aims to provide a comprehensive
+analysis on the role of undefined behavior optimizations for different
+classes of programs such as Operating Systems, Databases, Browsers,
+Compilers, High Performance Copmutation, etc.
