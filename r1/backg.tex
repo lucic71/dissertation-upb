@@ -3,7 +3,7 @@
 This section starts with a short history of how compilers started to
 take advantage of undefined behavior optimizations. Then we present some
 of the most popular optimizations based on undefined behavior such as
-signed integer overflow or null access. Finally, we talk about the
+signed integer overflow and null access. Finally, we talk about the
 problem of benchmarking these optimizations on real-life software.
 
 The first C compilers used for UNIX written by Ritchie et al. are
@@ -129,3 +129,38 @@ In this situation the unrolled code can be transformed into:
 In this situation the width of the loop counter is equal to the width of
 the pointer and the compiler is free to perform further optimizations
 that take advantage of pointer arithmetic.
+
+Another class of undefined behavior optimizations is based on the idea
+that NULL accesses are not defined by the standard. GCC was the first to
+take advantage of this using -fdelete-null-pointer-check. By using
+global dataflow analysis the compiler can eliminate useless checks for
+null pointer. If a pointer is checked after it was dereferenced, it
+cannot be NULL.
+
+However some environments depend on the assumption that dereferencing a
+NULL pointer does not cause a problem. This has caused a security
+vulnerability in the Linux kernel, more specifically in the tun_chr_poll
+function shown in Listing~\ref{lst:tun_chr_poll}.
+\begin{lstlisting}[style=Cstyle, caption={tun_chr_poll in
+drivers/net/tun.c of the Linux kernel}, label={lst:tun_chr_poll}]
+unsigned int
+tun_chr_poll(struct file *file, poll_table * wait)
+{
+	struct tun_file *tfile = file->private_data;
+	struct tun_struct *tun = __tun_get(tfile);
+	struct sock *sk = tun->sk;
+	if (!tun)
+		return POLLERR;
+	...
+}
+\end{lstlisting}
+
+The compilers notices that the tun pointer is dereferenced before it is
+NULL-checked and as an optimization it deletes the NULL check. If the
+memory page where NULL is present is not mapped then the kernel will
+generate a segmentaiton violation and it will halt. This happens
+regardless of the deleted NULL check. However if the NULL check is
+deleted and the page that contains NULL is mapped then the function does
+neither return a POLLERR nor generates a segmentation violation. In this
+point the system is vulnerable as an attacker could inject dangerous
+information in the page where NULL is present.
