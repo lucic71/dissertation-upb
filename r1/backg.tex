@@ -5,3 +5,127 @@ take advantage of undefined behavior optimizations. Then we present some
 of the most popular optimizations based on undefined behavior such as
 signed integer overflow or null access. Finally, we talk about the
 problem of benchmarking these optimizations on real-life software.
+
+The first C compilers used for UNIX written by Ritchie et al. are
+operating on the idea that C is a high level assembler. Each C
+instruction has a direct mapping to its corresponding assembly code. No
+code transformations that increase the performance of the final binary
+are found in this type of compiler. This is proven by the small size of
+such compilers~\cite{ritchiecomp}. 
+
+As C increased in popularity, it started being ported on different
+hardware with various requirements. Because of this, the code
+transformations performed by the compiler increased in complexity in
+order to be able to keep up with the performance requirements of the new
+hardware systems.
+
+Based on this situation the first C standard~\cite{iso90} decided to
+give freedom to compiler implementations to take advantage of complex
+code transformations using the definition of undefined behavior. Instead
+of making strong assumptions about the behavior of the code, the
+Standard puts no responsability on the compiler and allows it to
+generate various optimizations based on the target hardware
+architecture.
+
+At this moment in time C evolved from a language used only for Operating
+Systems development to a language with a broader rich based on its high
+hardware adoptance and on its performance advantages. Complex text
+editors, browsers, databases, compilers, version control systems,
+are just a few examples of programs that choose C as their main
+programming language.
+
+As a result, people involved in this ecosystem started to pay more
+attention to the compiler generated code. Vallat~\cite{vallat} describes
+this state of things as a schism. On one hand we had GCC 2.8 people
+"conservative but trying to catch up on C++98" and on the other hand we
+had the Pentium GCC group "attempting
+to produce faster code by stretching the optimizer code beyond its
+limits".
+
+"These projects eventually merged as gcc 2.95". From this moment on
+state-of-the-art compilers such as GCC and later Clang/LLVM focused
+their attention on generating the fastest possible code.
+
+Next, we will cover some \todo{be more specific} cases of undefined
+behavior optimizations illustrating on one hand their advantages and on
+the other hand their disadvantages.
+
+The signed integer overflow optimization is the most famous undefined
+behavior optimization. C compilers are unable to generate fast code for
+architectures where the size of int is different from the register
+width. However, for backwards compatibility reasons, int is still 32 bit
+on all 64 bit major architectures. This creates problems when int is
+used for generating memory addresses and for generating memory accesses.
+
+The issue is fairly common when generating code for loop variables.
+Given the following piece of code:
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
+sum = 0;
+for (int i = 0; i < count; ++i)
+	sum += x[i];
+\end{lstlisting}
+the compiler can naively generate the following piece of assembly code:
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
+                            ; ecx = count
+                            ; rsi = points to x[]
+    xor    eax, eax         ; clear sum
+    xor    ebx, ebx         ; i
+  lp:
+    movsxd rdx, ebx         ; sign-extend i to 64 bits
+    add    eax, [rsi+rdx*4] ; sum += x[i]
+    inc    ebx              ; i++
+    cmp    ebx, ecx         ; if i < count
+    jl     lp               ;   goto lp
+  done:
+\end{lstlisting}
+
+Because the loop counter is a 32 bit value it needs to be sign extended
+to 64 bits in order to be able to access the memory at x[i]. Things get
+worse when the compiler is free to loop unroll the computation inside
+the loop:
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
+  lp:
+    movsxd rdi, ebx         ; sign-extend i to 64 bits
+    add    eax, [rsi+rdi*4] ; sum += x[i]
+    lea    edi, [ebx+1]     ; i+1
+    movsxd rdi, edi         ; sign-extend i+1 to 64 bits
+    add    eax, [rsi+rdi*4] ; sum += x[i+1]
+    lea    edi, [ebx+2]     ; i+2
+    movsxd rdi, edi         ; sign-extend i+2 to 64 bits
+    add    eax, [rsi+rdi*4] ; sum += x[i+2]
+    lea    edi, [ebx+3]     ; i+3
+    movsxd rdi, edi         ; sign-extend i+3 to 64 bits
+    add    eax, [rsi+rdi*4] ; sum += x[i+3]
+    add    ebx, 4           ; i=i+4
+\end{lstlisting}
+
+Here, the compiler is free to do loop unrolling but because the variable
+is declared on 32 bits it needs to extend it to 64 bits every time it
+wants to use it. An alternative would be to sign extend i only one time
+and them use the 64 bit value for the further computations but for this
+to be possible it is neccesary that the compiler proves that i will
+never overflow.
+
+However we can use the fact that signed overflow is undefined and
+promote the int variable to a int64 type. The resulting C could will
+look as follows:
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
+sum = 0;
+int64 i64 = (int64) i;
+for (i64 = 0; i64 < (int64) count; ++i64)
+	sum += x[i64];
+\end{lstlisting}
+
+In this situation the unrolled code can be transformed into:
+\begin{lstlisting}[style=Cstyle, caption={}, label={}]
+  lp:
+    add    eax, [rsi+0]    ; sum += x[i+0]
+    add    eax, [rsi+4]    ; sum += x[i+1]
+    add    eax, [rsi+8]    ; sum += x[i+2]
+    add    eax, [rsi+12]   ; sum += x[i+3]
+    add    rsi, 16         ; x += 4
+\end{lstlisting}
+
+In this situation the width of the loop counter is equal to the width of
+the pointer and the compiler is free to perform further optimizations
+that take advantage of pointer arithmetic.
