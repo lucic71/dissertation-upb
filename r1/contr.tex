@@ -1,64 +1,38 @@
 \section{Research Plan} \label{sec:rp}
 
-Given the little research done in the field of analysing the performance
-of UB optimizations, this study aims to provide insights of the
-performance of these optimizations on a specific class of software
-applications, i.e. operating systems.
-
-The first step of our work is to filter out all undefined behavior
-instances presented in the standard and focus on the undefined behaviors
-that present a potential for being used in compiler optimizations. Our
-filtering strategy is based on the assumption that all undefined
-behaviors that conflict with the intentionality of the programmer shall
-not be used to issue code optimizations.
-
-Then we either modify the compiler implementation or use
-compiler-specific flags to turn off these optimizations. A preliminary
-list of such undefined behaviors extracted from the
-standard~\cite{iso90} is:
+In the second semester we plan to disable all undefined behavior
+optimizations from the frontend of the compiler, i.e. Clang. Sources of
+undefined behavior include:
 \begin{itemize}
-\item An arithmetic operation is invalid (such as division or modulus by
-0) or produces a result that cannot be represented in the space provided
-(such as overflow or underflow) (\$3.3).
-\item An invalid array reference, null pointer reference, or reference
-to an object declared with automatic storage duration in a terminated
-block occurs (\$3.3.3.2).
-\item A pointer is converted to other than an integral or pointer type
-(\$3.3.4).  
+  \item signed integer overflow
+  \item pointer overflow
+  \item NULL pointer dereference
+  \item shift overflow
+  \item uninitialized load
+  \item use-after-free
+  \item out-of-bounds accesses
+  \item infinite loop
 \end{itemize}
 
-\todo{talk here or somewhere else about the practical consequences of UB
-optimizations}
-The first undefined behavior could lead to code being eliminated if the
-compiler detects that the arithmetic operation is incompatible with the
-standard~\cite{wang2012undefined}. The second undefined behavior could
-discard security checks for NULL pointers~\cite{fnodeletelinux} and the
-third undefined behavior could break manual optimizations on floating
-point numbers~\cite{lomont2003fast}.
+In parallel, we plan to create a benchmarking infrastructure. We use
+this infrastructure for detecting the performance changes for various
+program categories. To achieve this, we compile each category with
+different sets of undefined behavior optimizations. Doing this we
+understand the impact of the frontend optimizations on each program
+category.
 
-To analyze the role of these optimizations in real-life software, we
-take a self-contained operating system with focus on robustness and
-security, i.e. OpenBSD, and compile it on one hand with UB optimizations
-turned on and on the other hand with UB optimizations turned off. After
-this stage, the result will be two comparison candidates which will be
-tested against various benchmarks that will highlight the advantages and
-disadvantages of the UB optimizations.
+In the third semester we tackle the optimizations present in LLVM and
+the backend of the compiler. Compared to Clang, LLVM makes more
+aggressive use of undefined behavior optimizations. In the first phase
+we will disable the optimizations that we know about. Later, in the
+second phase, we might use Alive2~\cite{lopes2021alive2} to find new
+sources of undefined behavior that are used by LLVM.
 
-Furthermore, we analyze the role of UB optimizations in the various
-hardware architectures that OpenBSD supports~\cite{obsdhw}. We suspect
-that there are hardware setups on which undefined behaviors play a
-bigger role in compiler optimizations. At the same time, we want to see
-how the compiler treats robustness and security for each hardware
-architecture.
+For benchmarking we will use the same approach as in the first semester.
+The plan is to make the modifications in LLVM easily configurable, i.e.
+create flags that enable and disable the corresponding modifications.
 
-At this moment we do not know which components of the systems will be
-modified when UB optimizations are turned off so we cannot provide the
-benchmarks that we intend to use. However after we get this information,
-we plan to create a modification map that will help us visualize the
-components with the highest rate of modification. After this step, what
-we will do is to provide benchmarks that will focus on those specific
-components.
-
-The final result will be a fine grained comparison between the two test
-candidates that will focus on one hand of speed and performance and on
-the other hand on robustness and security.
+We plan to continue this work in the fourth semester if we discover that
+there is more modification work than we expected. Otherwise we will
+focus on providing insights on the security side of undefined behavior
+optimizations, as opposed to the performance side.

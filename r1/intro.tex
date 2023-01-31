@@ -21,16 +21,6 @@ code:~\textit{\(if (c < b)\)}, assuming that the addition is signed.
 This is possible because signed oveflow is undefined, as discussed, and
 the compiler is free to infer the addition property of inequality.
 
-Certain classes of programs, such as High Performance Computing take
-great advantage of undefined behavior for issuing compiler
-optimizations. Programs in this class contain tight loops that perform a
-a significant amount of operations per second. As a consqeuence
-programers are interested in generating code that runs as fast as
-possible. Not needing to perform bounds checks, not considering the case
-where the signed iterator of the loop oveflows or converting the loop
-iterator from signed to unsigned are just a few scenarios that can boost
-the performance of the code.
-
 Wang et al.~\cite{wang2012undefined} experimented with the consequences
 of disabling undefined behavior optimizations on the SPECint 2006
 benchmark. Out of 12 programs in the benchmark they noticed slowdowns
@@ -38,26 +28,8 @@ for 2 of them. 456.hmmer slows down $7.2\%$ with GCC 4.7 and $9.0\%$
 with Clang/LLVM 3.1 while 462.libquantum slows down $6.3\%$ with the
 same version of GCC and $11.8\%$ with the same version of Clang/LLVM.
 
-In Operating Systems things behave differently than in the case of High
-Performance Computing. Operating Systems are part of a class of programs
-that are not CPU bound hence might not benefit from the performance
-advantages of undefined behavior. Instead they make part of the class of
-programs where security and robustness play an important role. Because
-of this, undefined behavior optimizations must be carefully analyzed so
-that they do not introduce security issues, as Linus Torvalds
-noted~\cite{linusgcc}:
-\begin{displayquote}
-Performance doesn't come from occasional small and odd
-micro-optimizations. I care about performance a lot, and I actually look
-at generated code and do profiling etc. None of those three options
-[-fno-strict-overflow, -fno-strict-aliasing,
--fno-deletel-null-pointer-checks] have *ever* shown up as issues. But
-the incorrect code they generate? It has.
-\end{displayquote}
-
-The problems Torvalds complains about are often encountered in the field
-of Operating Systems. One of the most well known security issue found
-due to undefined behavior optimizations was found in BSD systems.
+In addition to the above mentioned performance results, undefined
+behavior optimizations can give birth to unexpected code generation.
 Listing~\ref{lst:junk} presents a historical snippet of code from
 srandomdev(3), a function that initializes the random number generator
 of the system.
@@ -123,30 +95,32 @@ problems and switched to Clang/LLVM. Meanwhile, BSD systems solved this
 problem and srandomdev(3) uses defined behavior for generating random
 numbers~\cite{junkobsd,junkfbsd,junkdbsd}.
 
-In this context, it is important to analyze for each class of programs
-what are the advantages and the disadvantages of undefined behavior
-optimizations issued by the compiler based on the requirements of the
-class. Wang et al.~\cite{wang2012undefined} started the work in this
-field by analyzing the preformance of GCC and Clang with a limited set
-of disabled undefined behavior optimizations on SPECint 2006 benchmark.
+In this context, it is important to analyze for each application
+category what are the advantages and the disadvantages of undefined
+behavior optimizations issued by the compiler based on the requirements
+of the category. Wang et al.~\cite{wang2012undefined} started the work
+in this field by analyzing the preformance of GCC and Clang/LLVM with a
+limited set of disabled undefined behavior optimizations on SPECint 2006
+benchmark.
 
 We take their work one step further and analyze the advantages and
-disadvantages of undefined behavior optimizations for real-life
-software.
+disadvantages of undefined behavior optimizations for a diverse set of
+application categories. Furthermore we present an extensive catalogue of
+all undefined behavior optimizations that are used today.
 
 To achieve our goals, we take Clang/LLVM and disable all undefined
 behavior optimizations, e.g signed overflow optimizations, null access
 optimizaitions, oversized shift optimizations, etc. We do the
-modifications either through the already accessible compiler flags
-or by changing the internals of the compiler. The end result will be a
+modifications either through the already accessible compiler flags or by
+changing the internals of the compiler. The end result will be a
 modified compiler free of undefined behavior optimizations that will be
-used to test the advantages and disadvantages for each class of
-programs.
+used to test the advantages and disadvantages for each application
+categories.
 
 The metric we use for assessing the advantages and disadvantages is
 performance. The performance may include, but it is not limited to, code
-size and code speed. We take examples from each class of programs and
-create benchmarks that show how the performance has changed based on the
-modifications done in the compiler.
+size and code speed. We take examples from each application categories
+and create benchmarks that show how the performance has changed based on
+the modifications done in the compiler.
 
 This study is structured as follows. [needs reformulaiton]

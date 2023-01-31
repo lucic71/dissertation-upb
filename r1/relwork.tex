@@ -1,23 +1,19 @@
 \section{Related Work} \label{sec:rl}
-%% I want to talk in this section about:
-%%  - work of Ertl
-%%  - work of Wang et al.
-%%  - how iso c became unusable for os dev
-%%  - ubs that are used for optimizations
 
-Little work has been done in the area of detecting the performance
-speedup of UB optimizations in real-life software projects. Wang et
-al.~\cite{wang2012undefined} and Ertl~\cite{ertl2015every} provide
-metrics for this class of optimizations based on SPECint benchmark.
+Wang et al.~\cite{wang2012undefined} and Ertl~\cite{ertl2015every}
+provide metrics for undefined based optimizations based on the SPECint
+benchmark.
 
-Wang et al. state that they observed a decrease in performance of $7.2\%$
-with GCC and $9.0\%$ with Clang for 456.hammer and $6.3\%$ with GCC and
-$11.8\%$ with Clang for 462.libquantum. The experiments were conducted
-with UB optimizations turned off.
+Wang et al. experimented with the consequences of disabling undefined
+behavior optimizations on the SPECint 2006 benchmark. Out of 12 programs
+in the benchmark they noticed slowdowns for 2 of them. 456.hmmer slows
+down $7.2\%$ with GCC 4.7 and $9.0\%$ with Clang/LLVM 3.1 while
+462.libquantum slows down $6.3\%$ with the same version of GCC and
+$11.8\%$ with the same version of Clang/LLVM.
 
-Ertl states that with Clang-3.1 and UB optimizations turned on the
-speedup factor is $1.017$ for SPECint 2006. Furthermore, for a specific
-class of programs, i.e. Jon Bentley's traveling salesman problem, the
-speedup factor can reach values greater than $2.7$ if the programmer
-issues source-level optimizations by hand, surpassing the UB
-optimizations issued by the compiler.
+Ertl states that with Clang-3.1 and undefined behavior optimizations
+turned on, the speedup factor is $1.017$ for SPECint 2006. Furthermore,
+for a specific category of applications, i.e. Jon Bentley's traveling
+salesman problem, the speedup factor can reach values greater than $2.7$
+if the developer issues source-level optimizations by hand, surpassing
+the undefined behavior optimizations issued by the compiler.

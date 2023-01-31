@@ -1,15 +1,10 @@
 \begin{abstract} 
 \noindent
-State-of-the-art compilers, such as GCC and Clang/LLVM, use undefined
-behavior to issue optimizations. These optimizations may boost the
-performance of specific classes of programs, such as High Performance
-Computing. In contrast, other classes of programs, such as Operating
-Systems, might not benefit from the performance advantages of undefined
-behavior optimizations. In the latter case, disadvantages emerge in the
-form of security vulnerabilities. In this study we analyze the
-advantages and disadvantages of undefined behavior optimizations
-for various classes of programs. To achieve this we take Clang/LLVM and
-disable all undefined behavior optimizations. Then we analyze the
-preformance impact for each class of application using suitable
-benchmarks.
+State-of-the-art compilers, such as Clang/LLVM, use undefined behavior
+to issue optimizations. In this study we explore the impact of undefined
+behavior optimizations for a diverse set of application categories. The
+results can be used by application developers who may choose to disable
+certain such optimizations becuause they buy low performance benefits or
+they are considered to dangerous. Furthermore we present an extensive
+catalogue of all undefined behavior optimizations that are used today.
 \end{abstract}
