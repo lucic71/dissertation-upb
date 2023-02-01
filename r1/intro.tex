@@ -13,12 +13,12 @@ ADD instruction performs second's complement wrapping.
 The freedom that undefined behavior supplies also gives birth to
 compiler opitmizations. The main philosophy here is that a program that
 triggers undefined behavior for some input is incorrect. The compiler
-can assume that the program it is gives is always correct and so, it
+can assume that the program it is given is always correct and so, it
 takes advantage of undefined behavior by assuming it never happens. The
 following piece of code:~\textit{\(if (a + c < a + b)\)} can be
 transformed, in this case, into the following piece of
 code:~\textit{\(if (c < b)\)}, assuming that the addition is signed.
-This is possible because signed oveflow is undefined, as discussed, and
+This is possible because signed overflow is undefined, as discussed, and
 the compiler is free to infer the addition property of inequality.
 
 Wang et al.~\cite{wang2012undefined} experimented with the consequences
@@ -32,7 +32,7 @@ In addition to the above mentioned performance results, undefined
 behavior optimizations can give birth to unexpected code generation.
 Listing~\ref{lst:junk} presents a historical snippet of code from
 srandomdev(3), a function that initializes the random number generator
-of the system.
+of the BSD systems.
 
 \begin{lstlisting}[style=Cstyle, caption={srandom function in
 lib/libc/stdlib/random.c on BSD systems}, label={lst:junk}]
@@ -49,8 +49,8 @@ srandomdev(void)
 }
 \end{lstlisting}
 
-It makes use of unitialized memory, through junk, for generating
-randomness. This is a typical case of undefined behavior and its
+It makes use of uninitialized memory, through junk, for generating
+randomness. This uninitialized load triggers undefined behavior  and its
 consequences are best seen in the difference of the generated code by
 two different compilers.
 
@@ -99,7 +99,7 @@ In this context, it is important to analyze for each application
 category what are the advantages and the disadvantages of undefined
 behavior optimizations issued by the compiler based on the requirements
 of the category. Wang et al.~\cite{wang2012undefined} started the work
-in this field by analyzing the preformance of GCC and Clang/LLVM with a
+in this field by analyzing the performance of GCC and Clang/LLVM with a
 limited set of disabled undefined behavior optimizations on SPECint 2006
 benchmark.
 
@@ -110,16 +110,15 @@ all undefined behavior optimizations that are used today.
 
 To achieve our goals, we take Clang/LLVM and disable all undefined
 behavior optimizations, e.g signed overflow optimizations, null access
-optimizaitions, oversized shift optimizations, etc. We do the
+optimizations, over-sized shift optimizations, etc. We do the
 modifications either through the already accessible compiler flags or by
 changing the internals of the compiler. The end result will be a
 modified compiler free of undefined behavior optimizations that will be
-used to test the advantages and disadvantages for each application
-categories.
+used to test the performance advantages and disadvantages for each
+application category.
 
-The metric we use for assessing the advantages and disadvantages is
-performance. The performance may include, but it is not limited to, code
-size and code speed. We take examples from each application categories
+The performance may include, but it is not limited to, code
+size and code speed. We take examples from each application category
 and create benchmarks that show how the performance has changed based on
 the modifications done in the compiler.
 
