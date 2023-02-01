@@ -17,3 +17,10 @@ for a specific category of applications, i.e. Jon Bentley's traveling
 salesman problem, the speedup factor can reach values greater than $2.7$
 if the developer issues source-level optimizations by hand, surpassing
 the undefined behavior optimizations issued by the compiler.
+
+Clang/LLVM evolved in the methods of exploiting undefined behavior
+optimizations and little research has been done in this area. We build
+on top of the studies of Wang et al. and Ertl to provide a comprehensive
+list of how compilers exploit undefined behavior to issue optimizations
+and to provide the impact of this class of optimizations for various
+application categories.
