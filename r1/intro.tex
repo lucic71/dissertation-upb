@@ -18,7 +18,7 @@ takes advantage of undefined behavior by assuming it never happens. The
 following piece of code:~\textit{\(if (a + c < a + b)\)} can be
 transformed, in this case, into the following piece of
 code:~\textit{\(if (c < b)\)}, assuming that the addition is signed.
-This is possible because signed overflow is undefined, as discussed, and
+This is possible because signed overflow is undefined, as mentioned, and
 the compiler is free to infer the addition property of inequality.
 
 Wang et al.~\cite{wang2012undefined} experimented with the consequences
