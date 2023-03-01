@@ -1,17 +1,19 @@
 \section{Context and Motivation}
 
-The ISO C Standard~\cite{iso90} provides a definition of undefined
-behavior that gives absolute freedom to compiler implementation when
-erroneous program constructs, erroneous data or indeterminately-valued
-objects are encountered. This allows Clang/LLVM to treat
-undefined behavior in various ways while still being standard
+The C and C++ Standards~\cite{c17,cpp17} provide a definition of
+undefined behavior that gives absolute freedom to compiler
+implementation when erroneous program constructs, erroneous data or
+indeterminately-valued objects are encountered. This allows Clang/LLVM
+to treat undefined behavior in various ways while still being standard
 conformant.
 
 This allows the compiler implementation to use the definition of
-undefined behavior to issue optimizations. However, the impact of such
-optimizations is not clear. Some application categories might benefit
-from the advantages of undefined behavior optimizations while other
-might not.
+undefined behavior to issue optimizations. However, the performance
+impact of such optimizations is not clear. With the recent
+proposal~\cite{eb} in the C++ Comittee of introducing erroneous behavior
+in the Standard this problem gathers more attention. There is no data
+that shows what are the most critical undefined behaviors for
+performance.
 
 In this context we take a set of application categories and assess the
 performance impact of undefined behavior optimizations. The categories
@@ -30,3 +32,8 @@ applications and a fast and mature interface for running the benchmarks.
 We test the appplication categories against different undefined behavior
 optimization flags such as: -fwrapv, -fno-strict-aliasing,
 -fstrict-enums, etc.
+
+To display the results, we take each application category and present a
+comparison between the performance of compiling the category with
+various undefined behavior optimization flags. The performance may be
+measured in execution time, FPS, transictions per second, etc.
