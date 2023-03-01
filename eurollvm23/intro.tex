@@ -1,0 +1,32 @@
+\section{Context and Motivation}
+
+The ISO C Standard~\cite{iso90} provides a definition of undefined
+behavior that gives absolute freedom to compiler implementation when
+erroneous program constructs, erroneous data or indeterminately-valued
+objects are encountered. This allows Clang/LLVM to treat
+undefined behavior in various ways while still being standard
+conformant.
+
+This allows the compiler implementation to use the definition of
+undefined behavior to issue optimizations. However, the impact of such
+optimizations is not clear. Some application categories might benefit
+from the advantages of undefined behavior optimizations while other
+might not.
+
+In this context we take a set of application categories and assess the
+performance impact of undefined behavior optimizations. The categories
+are the following: webservers, circuit simulators, telephony, finance,
+GUI, software defined radio, speech, compression, texture compression,
+audio encoding, databases, chess, password cracking, cryptography,
+security, parallel processing, image processing, bioinformatics,
+simulation, video encoding, neural networks, HPC and compiler build
+speed.
+
+These categories are the result of a fine grained analysis of the
+benchmarks provided by Phoronix Test Suite~\cite{pts}. We use this
+benchmark framework as it provides support for a wide range of
+applications and a fast and mature interface for running the benchmarks.
+
+We test the appplication categories against different undefined behavior
+optimization flags such as: -fwrapv, -fno-strict-aliasing,
+-fstrict-enums, etc.
