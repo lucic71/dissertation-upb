@@ -98,8 +98,8 @@ Flags Added by Us & \\
 -fno-use-default-alignment & Use alignment of 1 for all memory operations including load, store, memcpy et al. Global variables and alloca's remain unaffected.\\
 TODO Flags & \\
 & Drop uninit loads and replace them with 0 loads. \\
-& OOB memory accesses. \\
-& Use-After-Free \\
+& Drop OOB memory exploitations from the LLVM optimizer. \\
+& Drop Use-After-Free memory exploitations from the LLVM optimizer.\\
 & Pointer casts; not-based-on-object pointers. \\
 & Don't exploit cases such as div by zero or INT\_MIN/-1. \\
 \end{tabular} \\
