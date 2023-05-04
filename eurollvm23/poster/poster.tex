@@ -58,15 +58,19 @@ area. Phoronix Test Suite was used to evaluate the performance of a diverse set
 of applications, including webservers, compression algorithms, graphical
 environments, etc. By compiling each application with flags that trigger
 specific UBs, we gathered various metrics (requests per second, MB/s, FPS,
-etc) for further analysis. Early results show that in nearly 90\% of the cases
+etc) for further analysis.
+
+\begin{large}
+Early results show that in nearly 90\% of the cases
 the performance impact is insignificant (between -2\% and 2\%).
+\end{large}
 
 \section{Experiment Setup}
 The performance tests were run on a machine with the following specs:
 \begin{itemize}
 \item Processor: 2 x Intel Xeon E5-2680 v2 @ 3.60GHz (20 Cores / 40 Threads), MicroArch: IvyBridge
 \item OS: Debian 11, kernel: 5.10.0-21-amd64 (x86\_64)
-\item Compiler: Clang 15.0.7 + LLVM 15.0.7
+\item Compiler: Clang 15.0.7
 \end{itemize}
 \bigbreak
 \bigbreak
@@ -79,7 +83,7 @@ The experiments were conducted using the following steps:
 \item Compare the UB flags benchmark results with the baseline
 \end{itemize}
 
-\section{Undefied Behavior Flags}
+\section{Undefined Behavior Flags}
 
 % TODO: make the second column syntactically parallel
 \rowcolors{2}{gray!25}{white}
@@ -88,20 +92,20 @@ The experiments were conducted using the following steps:
 Flag name & Flag Description\\
 Existing Flags & \\
 -fwrapv & Treat signed integer overflow as two's complement. Drops `nsw' from IR.\\
--fno-strict-aliasing & Drop the strictest aliasing rules. Drops `tbaa' from IR. \\
--fstrict-enums & Enable optimizations with the strict definition of an enum's value range. Drop `range' from IR.\\
+-fno-strict-aliasing & Don't use type-based alias analysis. Drops `!tbaa' from IR. \\
+-fstrict-enums & Enable optimizations that take advantage of enum's value ranges. Adds `!range' from IR.\\
 -fno-delete-null-pointer-checks & Assume that programs can safely dereference null pointers. \\
 -fno-finite-loops & Assume no loop is finite. `mustprogress' is not added to any loop or function.\\
 Flags Added by Us & \\
--fconstrain-shift-value & Shift amount is required to be at most the word size of LHS. \\
--fno-constrain-bool-value & Do not constrain bool values in \{0,1\}. Drops `range' from IR.\\
--fno-use-default-alignment & Use alignment of 1 for all memory operations including load, store, memcpy et al. Global variables and alloca's remain unaffected.\\
+-fconstrain-shift-value & Mask shift RHS so it doesn't produce poison when RHS >= bitwidth. \\
+-fno-constrain-bool-value & Do not constrain bool values in \{0,1\}. Drops `!range' from IR.\\
+-fno-use-default-alignment & Use alignment of 1 for all memory operations including load, store, memcpy, etc. Global variables and alloca's remain unaffected.\\
 TODO Flags & \\
-& Drop uninit loads and replace them with 0 loads. \\
-& Drop OOB memory exploitations from the LLVM optimizer. \\
-& Drop Use-After-Free memory exploitations from the LLVM optimizer.\\
-& Pointer casts; not-based-on-object pointers. \\
-& Don't exploit cases such as div by zero or INT\_MIN/-1. \\
+& Change uninitialized loads from undef to zero . \\
+& Don't treat out-of-bounds memory accesses as UB. \\
+& Don't treat use-after-free accesses as UB.\\
+& Don't use object-based rules in alias analysis (use an aassembly-like memory mode). \\
+& Remove arithmetic-related UBs (division by 0, etc). \\
 \end{tabular} \\
 
 \textbf{\textit{-fwrapv}} \\
@@ -193,3 +197,4 @@ than the positive impact.
 % mention that this is not a sanitizer
 % extract fno-use-default-value correctly because some benchmarks don't have
 %  results for this
+% redo cdfs but with higher dpi
