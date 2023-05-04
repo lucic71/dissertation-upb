@@ -95,7 +95,7 @@ Existing Flags & \\
 -fno-strict-aliasing & Don't use type-based alias analysis. Drops `!tbaa' from IR. \\
 -fstrict-enums & Enable optimizations that take advantage of enum's value ranges. Adds `!range' from IR.\\
 -fno-delete-null-pointer-checks & Assume that programs can safely dereference null pointers. \\
--fno-finite-loops & Assume no loop is finite. `mustprogress' is not added to any loop or function.\\
+-fno-finite-loops & Don’t assume that all loops are finite. `!mustprogress' is not added to any loop or function.\\
 Flags Added by Us & \\
 -fconstrain-shift-value & Mask shift RHS so it doesn't produce poison when RHS >= bitwidth. \\
 -fno-constrain-bool-value & Do not constrain bool values in \{0,1\}. Drops `!range' from IR.\\
@@ -195,6 +195,3 @@ than the positive impact.
 
 % TODOS:
 % mention that this is not a sanitizer
-% extract fno-use-default-value correctly because some benchmarks don't have
-%  results for this
-% redo cdfs but with higher dpi
