@@ -16,8 +16,8 @@
 
 \institute 
 {
-*Faculty of Automatic Control and Computer Science,\\
-Politehnica University of Bucharest \\
+*Facultatea de Automatica și Calculatoare,\\
+Universitatea Politehnică  din București\\
 ** Instituto Superior Técnico, \\
 Universidade de Lisboa
 }
@@ -31,7 +31,7 @@ Universidade de Lisboa
 
 \begin{document}
 
-\conference{{\bf EuroLLVM 23}, 11th May 2023, Glasgow, GB}
+\conference{{\bf EuroLLVM 23}, 10-11th May 2023, Glasgow, Scotland}
 
 %\LEFTSIDEfootlogo  
 % Uncomment to put footer logo on left side, and 
@@ -48,6 +48,12 @@ Universidade de Lisboa
 
 \maketitle
 
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
 \begin{multicols}{3}
 
 \section{Introduction}
@@ -60,10 +66,9 @@ environments, etc. By compiling each application with flags that trigger
 specific UBs, we gathered various metrics (requests per second, MB/s, FPS,
 etc) for further analysis.
 
-\begin{large}
+\section{Impact}
 Early results show that in nearly 90\% of the cases
 the performance impact is insignificant (between -2\% and 2\%).
-\end{large}
 
 \section{Experiment Setup}
 The performance tests were run on a machine with the following specs:
@@ -182,6 +187,7 @@ than the positive impact.
 \begin{itemize}
 \item Implement and benchmark other classes of UB.
 \item Run the benchmarks on different hardware architectures (AMD, ARM).
+\item Combine the flags when compiling the benchmarks.
 \item Find a method of discovering new UBs (maybe using Alive2).
 \item Run the benchmarks taking into account LTO and PGO.
 \end{itemize}
@@ -192,6 +198,3 @@ than the positive impact.
 \end{multicols}
 
 \end{document}
-
-% TODOS:
-% mention that this is not a sanitizer
