@@ -1,11 +1,12 @@
 \begin{abstract} 
 \noindent
-State-of-the-art compilers, such as Clang/LLVM, use undefined behavior
-to issue optimizations. In this study, we explore the impact of
-undefined behavior optimizations for a diverse set of application
-categories. The results can be used by application developers who may
-choose to disable certain such optimizations because they buy low
-performance benefits or they are considered too dangerous. Furthermore
-we present an extensive catalogue of all undefined behavior
-optimizations that are used today.
+Clang/LLVM uses undefined behavior to issue optimizations. In this report, we
+present the impact of this class of optimizations on a benchmarking suite built
+using Phoronix. In this suite we focus on a diverse set of application
+categories, ranging from compression algorithms and image processing to
+web-servers and databases. To extensively cover the impact on these
+applications, we provide 11 configurations that modify the behavior of the
+compiler when exploiting undefined behavior in optimizations. Current results
+show that in \todo{get number} of cases the impact of undefined behavior
+optimizations is insignificant.
 \end{abstract}
