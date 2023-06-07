@@ -1,130 +1,26 @@
-\section{Context and motivation}
+\section{Introduction}
 
-The ISO C Standard~\cite{iso90} provides a definition of undefined
-behavior that gives absolute freedom to compiler implementation when
-erroneous program constructs, erroneous data or indeterminately-valued
-objects are encountered. This allows various compilers to treat
-undefined behavior in different ways while still being standard
-conformant. For example, signed overflow is undefined behavior as there
-are multiple ways of treating it based on the target architecture. On
-MIPS and DEC Alpha the ADD and ADDV instructions trap while on IA-32 the
-ADD instruction performs second's complement wrapping.
+The work in this semester was broken down into two parts. First, we started by
+creating the infrastructure for running the benchmarks. Our main goal in this
+regard was to gather a set of popular applications written in C and C++. After
+exploring existing solutions for this problem, we decided to use the Phoronix
+Test Suite for this task. The applications provided by Phoronix were later
+compiled with various configurations that modify the behavior of the compiler
+when exploiting undefined behavior. For each configuration, we gathered a set of
+results that we will present later in this work. \cite{iso90} % this is a dummy
+% citation, must be deleted
 
-The freedom that undefined behavior supplies also gives birth to
-compiler optimizations. The main philosophy here is that a program that
-triggers undefined behavior for some input is incorrect. The compiler
-can assume that the program it is given is always correct and so, it
-takes advantage of undefined behavior by assuming it never happens. The
-following piece of code:~\textit{\(if (a + c < a + b)\)} can be
-transformed, in this case, into the following piece of
-code:~\textit{\(if (c < b)\)}, assuming that the addition is signed.
-This is possible because signed overflow is undefined, as mentioned, and
-the compiler is free to infer the addition property of inequality.
+Second, we were interested in exploring configurations for undefined behavior
+exploitation. We started from a set of already-implemented configurations, such
+as -fwrapv or -fno-strict-aliasing, and moved to configurations implemented by
+us, such as -fno-constrain-bool-value. We benefited from 5 already-implemented
+configurations and we managed to implement 6 more configurations. For some of
+the configurations the level of difficulty was relatively low, because we only
+had to modify the frontend of the compiler, i.e. Clang. However there existed
+cases where we also had to modify the middle-end of the compiler, i.e. LLVM.
 
-Wang et al.~\cite{wang2012undefined} experimented with the consequences
-of disabling undefined behavior optimizations on the SPECint 2006
-benchmark. Out of 12 programs in the benchmark they noticed slowdowns
-for 2 of them. 456.hmmer slows down $7.2\%$ with GCC 4.7 and $9.0\%$
-with Clang/LLVM 3.1 while 462.libquantum slows down $6.3\%$ with the
-same version of GCC and $11.8\%$ with the same version of Clang/LLVM.
-
-In addition to the above mentioned performance results, undefined
-behavior optimizations can give birth to unexpected code generation.
-Listing~\ref{lst:junk} presents a historical snippet of code from
-srandomdev(3), a function that initializes the random number generator
-of the BSD systems.
-
-\begin{lstlisting}[style=Cstyle, caption={srandom function in
-lib/libc/stdlib/random.c on BSD systems}, label={lst:junk}]
-void
-srandomdev(void)
-{
-	...
-	struct timeval tv;
-	unsigned long junk;
-
-	gettimeofday(&tv, NULL);
-	srandom((getpid() << 16) ^ tv.tv_sec ^ tv.tv_usec ^ junk);
-	...
-}
-\end{lstlisting}
-
-It makes use of uninitialized memory, through junk, for generating
-randomness. This uninitialized load triggers undefined behavior  and its
-consequences are best seen in the difference of the generated code by
-two different compilers.
-
-By inspecting \path{/usr/lib/libSystem.B.dylib} in Mac OS X 10.6 we see
-the following generated code for Listing~\ref{lst:junk}:
-\begin{lstlisting}[style=Cstyle, caption={}, label={}]
-leaq    0xe0(%rbp),%rdi
-xorl    %esi,%esi
-callq   0x001422ca      ; symbol stub for: _gettimeofday
-callq   0x00142270      ; symbol stub for: _getpid
-movq    0xe0(%rbp),%rdx
-movl    0xe8(%rbp),%edi
-xorl    %edx,%edi
-shll    $0x10,%eax
-xorl    %eax,%edi
-xorl    %ebx,%edi
-callq   0x00142d68      ; symbol stub for: _srandom
-\end{lstlisting}
-
-The compiler allocates a slot on the stack for junk and interprets that
-slot as the value of the junk variable that will be used in the srandom
-argument computation. 
-
-In the next version of the same operating system, i.e. Mac OS X 10.7,
-the same file has the following generated code:
-\begin{lstlisting}[style=Cstyle, caption={}, label={}]
-leaq    0xd8(%rbp),%rdi
-xorl    %esi,%esi
-callq   0x000a427e      ; symbol stub for: _gettimeofday
-callq   0x000a3882      ; symbol stub for: _getpid
-callq   0x000a4752      ; symbol stub for: _srandom
-\end{lstlisting}
-
-The newer version discards the seed computation as an optimization,
-generating code that calls gettimeofday and getpid but not using their
-values. Furthermore srandom is called with some garbage value that does
-not depend on the expression declared in the corresponding C code.
-
-This change in the generated source code happened at approximately the
-same time at which Apple decided to not use GCC anymore due to license
-problems and switched to Clang/LLVM. Meanwhile, BSD systems solved this
-problem and srandomdev(3) uses defined behavior for generating random
-numbers~\cite{junkobsd,junkfbsd,junkdbsd}.
-
-In this context, it is important to analyze for each application
-category what are the advantages and the disadvantages of undefined
-behavior optimizations issued by the compiler based on the requirements
-of the category. Wang et al.~\cite{wang2012undefined} started the work
-in this field by analyzing the performance of GCC and Clang/LLVM with a
-limited set of disabled undefined behavior optimizations on SPECint 2006
-benchmark.
-
-We take their work one step further and analyze the advantages and
-disadvantages of undefined behavior optimizations for a diverse set of
-application categories. Furthermore we present an extensive catalogue of
-all undefined behavior optimizations that are used today.
-
-To achieve our goals, we take Clang/LLVM and disable all undefined
-behavior optimizations, e.g signed overflow optimizations, null access
-optimizations, over-sized shift optimizations, etc. We do the
-modifications either through the already accessible compiler flags or by
-changing the internals of the compiler. The end result will be a
-modified compiler free of undefined behavior optimizations that will be
-used to test the performance advantages and disadvantages for each
-application category.
-
-The performance may include, but it is not limited to, code
-size and code speed. We take examples from each application category
-and create benchmarks that show how the performance has changed based on
-the modifications done in the compiler.
-
-This study is structured as follows. Section~\ref{sec:bg} provides
-examples of undefined behavior optimizations. Section~\ref{sec:rl}
-presents the previous work in the field of assessing the performance
-impact of this class of optimizations. In Section~\ref{sec:rp} we
-present our research plan. Finally, Section~\ref{sec:ccl} summarizes
-this work providing an overview of our goals.
+This work is structured as follows: in Section 1 provides detailed information
+about the process of creating the benchmarks for our use case, Section 2 talks
+about each compiler configuration that modifies the behavior of the compiler
+when exploiting undefined behavior, Section 3 presents the results of the
+benchmarks for each configuration, and Secton 4 discusses the results.
