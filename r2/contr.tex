@@ -1,0 +1,46 @@
+\section{Research Plan} \label{sec:rp}
+
+We divide our work over the course of three semesters. Starting from the
+frontend of the compiler, we explore how the compiler exploits
+undefined to trigger optimizations.
+
+In the second semester we plan to disable all undefined behavior
+optimizations from the frontend of the compiler, i.e. Clang. Sources of
+undefined behavior include:
+\begin{itemize}
+  \item signed integer overflow
+  \item pointer overflow
+  \item NULL pointer dereference
+  \item shift overflow
+  \item uninitialized load
+  \item use-after-free
+  \item out-of-bounds accesses
+  \item infinite loop
+\end{itemize}
+
+In parallel, we plan to create a benchmarking infrastructure. The
+infrastructure will run on a workstation with the following
+specifications: 2 x Intel DECA Core Xeon E5-2680 v2 2.80 GHz, 64GB DDR3
+ECC 1600 MHz, 256GB SSD SATA III.
+
+We use this infrastructure for detecting the performance changes for
+various program categories. To achieve this, we compile each category
+with different sets of undefined behavior optimizations. Doing this we
+understand the impact of the frontend optimizations on each program
+category.
+
+In the third semester we tackle the optimizations present in LLVM and
+the backend of the compiler. Compared to Clang, LLVM makes more
+aggressive use of undefined behavior optimizations. In the first phase
+we will disable the optimizations that we know about. Later, in the
+second phase, we might use Alive2~\cite{lopes2021alive2} to find new
+sources of undefined behavior that are used by LLVM.
+
+For benchmarking we will use the same approach as in the first semester.
+The plan is to make the modifications in LLVM easily configurable, i.e.
+create flags that enable and disable the corresponding modifications.
+
+We plan to continue this work in the fourth semester if we discover that
+there is more modification work than we expected. Otherwise, we will
+focus on providing insights on the security risks of undefined behavior
+optimizations.

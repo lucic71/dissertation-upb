@@ -1,0 +1,26 @@
+\section{Related Work} \label{sec:rl}
+
+Wang et al.~\cite{wang2012undefined} and Ertl~\cite{ertl2015every}
+provide metrics for undefined behavior optimizations based on the
+SPECint benchmark.
+
+Wang et al. experimented with the consequences of disabling undefined
+behavior optimizations on the SPECint 2006 benchmark. Out of 12 programs
+in the benchmark they noticed slowdowns for 2 of them. 456.hmmer slows
+down $7.2\%$ with GCC 4.7 and $9.0\%$ with Clang/LLVM 3.1 while
+462.libquantum slows down $6.3\%$ with the same version of GCC and
+$11.8\%$ with the same version of Clang/LLVM.
+
+Ertl states that with Clang-3.1 and undefined behavior optimizations
+turned on, the speedup factor is $1.017$ for SPECint 2006. Furthermore,
+for a specific category of applications, i.e. Jon Bentley's traveling
+salesman problem, the speedup factor can reach values greater than $2.7$
+if the developer issues source-level optimizations by hand, surpassing
+the undefined behavior optimizations issued by the compiler.
+
+Clang/LLVM evolved in the methods of exploiting undefined behavior
+optimizations and little research has been done in this area. We build
+on top of the studies of Wang et al. and Ertl to provide a comprehensive
+list of how compilers exploit undefined behavior to issue optimizations
+and to provide the impact of this class of optimizations for various
+application categories.
