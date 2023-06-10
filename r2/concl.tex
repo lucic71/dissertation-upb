@@ -1,11 +1,25 @@
 \section{Conclusions} \label{sec:ccl}
 
-State-of-the-art compilers, such as Clang/LLVM, use undefined behavior
-to issue optimizations. However there is no study that presents exactly
-what optimizations are used in Clang/LLVM and what their effects are on
-various application categories. In this work we fill this gap by making
-the necessary changes in the compiler to disable these optimizations.
-Then we benchmark a diverse set of application categories compiled with
-our compiler in order to assess the performance when the optimizations
-are disabled. For the performance metrics, we focus on code speed and
-code size.
+In this semester we started the work of evaluating the peformance impact of
+undefined behavior optimizations. We split the work in two parts. In the first
+part we focused on developing a benchmark suite that contains C/C++ applications
+with real loads, as opposed to synthetic loads. Then we started benchmarking 10
+compiler flags that control the behavior of the compiler optimizations with
+regards to undefined behavior. 5 of them were already implemented, but we also
+added 5 new flags. Early results show that in nearly 90\% of the cases the
+performance impact of undefined behavior in optimizations is insignificant.
+
+\section{Further Work} \label{sec:further-work}
+
+In the next semester we plan to explore new compiler configurations. This
+includes optimizations based on use-after-free, optimizations based on alias
+analysis that uses object-based rules or optimizatoins based on arithmetic
+related undefined behaviors, such as division by 0.
+
+We also plan to run the benchmarks on other hardware architectures such as AMD
+or ARM to explore how they behave in comparison with the current hardware setup
+that is based on Intel.
+
+It's also an interest for us to combine the flags to see how they behave
+together with regards to performance but must important is to analyse the
+current impact and discover the root causes of current peformance numbers.
