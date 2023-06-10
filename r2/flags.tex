@@ -1,1 +1,68 @@
 \section{Compiler Configurations based on Undefined Behavior} \label{sec:flags}
+
+After we defined the benchmark suite, we focued on evaluating the performance
+impact of various undefined behavior optimizations. In this section we present
+first the already-implemented configurations for the above mentioned
+optimizations and second we present the configurations that we implemented.
+
+Each configuration is made available through a compiler flag that can be used
+when compiling the benchmarks.
+
+\subsection{Already-implemented compiler flags}
+
+We benefited from 5 flags in this category.
+
+\textit{-fwrapv} instructs the compiler to assume that signed arithmetic
+overflow of addition, subtraction and multiplication wraps around using
+twos-complement representation. In LLVM, this has the impact of dropping the
+\textit{nsw} attribute in the above mentionted aritmetic operations.
+
+\textit{-fno-strict-aliasing} instructs the compiler to apply the strictest
+aliasing rules available. In LLVM, this has the impact of dropping the
+\textit{tbaa} attribute that is used for type based alias analysis.
+
+\textit{-fstrict-enums} instructs the compiler to optimize using the assumption
+that a value of enumerated type can only be one of the values of the enumeration
+(as defined in the C++ standard; basically, a value that can be represented in
+the minimum number of bits needed to represent all the enumerators). In LLVM,
+this has the impact of adding the \textit{range} attribute to memory operations.
+
+\textit{-fno-delete-null-pointer-checks} instructs the compiler to assume that
+programs can safely dereference NULL pointers and thus to not delete NULL
+pointer checks that are proved to be redundant.
+
+\textit{-fno-finite-loops} instructs the compiler to assume that no loop is
+finite. In LLVM, this has the impact of dropping the \textit{mustprogress}
+attribute from all loops and functions.
+
+\subsection{Added compiler flags}
+
+\textit{-fconstrain-shift-value} instructs the compiler to mask the
+right-hand-side (RHS) of the shift operation so that it does not produce
+undefined behavior when the RHS is bigger that the bitwidth. On x86, this add an
+additional \textit{and} instruction for masking.
+
+\textit{-fno-constrain-bool-value} instructs the compiler to not constrain bool
+values to 0 and 1. In LLVM, this has the impact of dropping the \textit{range}
+attribute from memory operations that work with booleans.
+
+\textit{-fno-use-default-alignment} instructs the compiler to use alignment 1
+for all memory operations including load, store, memcpy, etc. The alignments of
+global variables and allocas remain unaffected. This has the impact of not
+generating the most efficient code because the compiler cannot find the best
+alignment for each operation that was forcefully aligned to 1.
+
+\textit{-mllvm -zero-uninit-loads} instructs the compiler to replace
+uninitialized loads with zero loads. This does not automatically initialize all
+memory with zero, instead it fills the memory with zero only when the memory is
+requested.
+
+\textit{-fdrop-inbounds-from-gep -mllvm -trap-on-oob} instructs the compiler to
+trap when it detects an out-of-bounds (OOB) memory access. By trapping, the
+compiler is blocked from doing any further optimizations based on OOB. This is a
+combination between a Clang flag (\textit{-fdrop-inbounds-from-gep}) and a LLVM
+flag(\textit{-trap-on-oob}). We needed the Clang flag to make sure that no
+optimization is triggered on the OOB access before we add the trap.
+
+At the moment of writing this report, the last two flags are still in
+development.
