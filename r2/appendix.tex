@@ -1,6 +1,6 @@
 \section{Appendix} \label{sec:appendix}
 
-\begin{table}
+\begin{table}[H]
 \centering
 \begin{tabular}{ |p{5cm}|p{5cm}|  }
  \hline
@@ -64,3 +64,50 @@
 \end{tabular}
 \caption{\label{tab:suite} Final benchmark suite that uses Phoronix applications}
 \end{table}
+
+\subsection{Performance Impact for Undefined Behavior Flags}
+\label{sec:flags-results}
+
+\begin{figure}
+\centering
+\includegraphics{fwrapv}
+\caption{CDF of performance impact for -fwrapv}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fno-strict-aliasing}
+\caption{CDF of performance impact for -fno-strict-aliasing}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fstrict-enums}
+\caption{CDF of performance impact for -fstrict-enums}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fno-delete-null-pointer-checks}
+\caption{CDF of performance impact for -fno-delete-null-pointer-checks}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fconstrain-shift-value}
+\caption{CDF of performance impact for -fconstrain-shift-value}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fno-constrain-bool-value}
+\caption{CDF of performance impact for -fno-constrain-bool-value}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{fno-use-default-alignment}
+\caption{CDF of performance impact for -fno-use-default-alignment}
+\end{figure}
+
+\todo{Add CDF for -fno-finite-loops}
