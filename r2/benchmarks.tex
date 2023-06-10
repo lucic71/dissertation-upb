@@ -1,6 +1,38 @@
 \section{Creating the Benchmarking Infrastructure} \label{sec:benchmarks}
 
 To simplify the benchmarking process, we needed an infrastructure that would be
-triggered for each compiler configuration based on undefined behavior. The
-requirements for such an infrastructure were: contain benchmarks for C/C++
-applications and avoid synthetic benchmarks.
+triggered for each undefined behavior configuration. The requirements for such
+an infrastructure were: contain benchmarks for C/C++ applications and avoid
+synthetic benchmarks. We wanted to avoid synthetic benchmarks because we aimed
+to evaluate the impact of undefined behavior optimizations on real application
+loads.
+
+The investigation of the state-of-the-art benchmarking infrastructure for real
+application loads resulted in two candidates, i.e. Phoronix Test
+Suite~\cite{phoronix} and Geekbench~\cite{geekbench}. We chose to go further
+with Phoronix because it sofware is open-source and it can be extended with new
+benchmarks as per our needs, as opposed to Geekbench.
+
+Phoronix offers a wide variety of benchmarks, written in various programming
+languages. We were only interested in the ones written in C and C++. To do that
+we had to filter all benchmarks by their dependencies and choose only the ones
+that had a C/C++ compiler as a dependency. This resulted in a list of nearly 200
+applications.
+
+We had to further filter out the benchmark applications because a number of them
+had problems while they were compiled with Clang. The effort of making them work
+with this compiler was not worth as we had a good amount of applications that
+already worked.
+
+Next, we had the problem of benchmarking time. Spending too much time on
+benchmarking was not beneficial for us so we decided to limit one round of
+benchmarking to 24 hours. Because of that we had to further cut applications tht
+required a significant amount of time to benchmark. One example of such
+application is GCC. One of the benchmarks in our suite was measuring the time of
+building GCC form sources. GCC was a complicated 3-step build process, that
+takes a few hours to complete, thus we wanted to avoid it.
+
+This process resulted in the benchmark suite presented in Table~\ref{tab:suite}.
+At this moment the suite mostly  contains applications that are either CPU bound
+or memory bound. We discarded completly GPU, OpenMP and MPI applications as they
+are more difficult to benchmark.
