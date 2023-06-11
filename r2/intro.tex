@@ -13,14 +13,15 @@ Second, we were interested in exploring configurations for undefined behavior
 exploitation. We started from a set of already-implemented configurations, such
 as -fwrapv or -fno-strict-aliasing, and moved to configurations implemented by
 us, such as -fno-constrain-bool-value. We benefited from 5 already-implemented
-configurations and we managed to implement 6 more configurations. For some of
+configurations and we managed to implement 5 more configurations. For some of
 the configurations the level of difficulty was relatively low, because we only
 had to modify the frontend of the compiler, i.e. Clang. However there existed
 cases where we also had to modify the middle-end of the compiler, i.e. LLVM.
 
-This work is structured as follows: in Section~\ref{sec:benchmarks} provides
+This work is structured as follows: Section~\ref{sec:benchmarks} provides
 detailed information about the process of creating the benchmarks for our use
 case, Section~\ref{sec:flags} talks about each compiler configuration that
 modifies the behavior of the compiler when exploiting undefined behavior,
 Section~\ref{sec:results} presents the results of the benchmarks for each
-configuration, and Secton~\ref{sec:discussion} discusses the results.
+configuration, and Secton~\ref{sec:discussion} discusses the limitations of the
+benchmarking process.

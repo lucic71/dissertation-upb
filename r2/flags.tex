@@ -15,25 +15,29 @@ We benefited from 5 flags in this category.
 \textit{-fwrapv} instructs the compiler to assume that signed arithmetic
 overflow of addition, subtraction and multiplication wraps around using
 twos-complement representation. In LLVM, this has the impact of dropping the
-\textit{nsw} attribute in the above mentionted aritmetic operations.
+\textit{nsw}~\cite{nsw-def} attribute in the above mentionted aritmetic
+operations.
 
 \textit{-fno-strict-aliasing} instructs the compiler to apply the strictest
 aliasing rules available. In LLVM, this has the impact of dropping the
-\textit{tbaa} attribute that is used for type based alias analysis.
+\textit{tbaa}~\cite{tbaa-def} attribute that is used for type based alias
+analysis.
 
 \textit{-fstrict-enums} instructs the compiler to optimize using the assumption
 that a value of enumerated type can only be one of the values of the enumeration
 (as defined in the C++ standard; basically, a value that can be represented in
 the minimum number of bits needed to represent all the enumerators). In LLVM,
-this has the impact of adding the \textit{range} attribute to memory operations.
+this has the impact of adding the \textit{range}~\cite{range-def} attribute to
+memory operations.
 
 \textit{-fno-delete-null-pointer-checks} instructs the compiler to assume that
 programs can safely dereference NULL pointers and thus to not delete NULL
 pointer checks that are proved to be redundant.
 
 \textit{-fno-finite-loops} instructs the compiler to assume that no loop is
-finite. In LLVM, this has the impact of dropping the \textit{mustprogress}
-attribute from all loops and functions.
+finite. In LLVM, this has the impact of dropping the
+\textit{mustprogress}~\cite{mustprogress-def} attribute from all loops and
+functions.
 
 \subsection{Added compiler flags}
 
