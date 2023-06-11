@@ -166,21 +166,7 @@ results}, label={lst:fnoconstrain-bool-value-result}]
 
 To implement this flag we had to modify many parts of Clang. Because we are
 working with memory operations in this flag, we had to patch all calls to
-CreateStore, CreateLoad, CreateMemCpy, etc \todo{cite doxygen} methods. This was
-a non-trivial task as there are tens of calls to these methods in different
-subsystems of Clang.
-
-After patching all usages, we discovered the problem of atomic loads and stores.
-On x86, these types of memory operations need to be properly aligned, otherwise
-the processor will trap. To solve this problem, we decided to link the compiled
-applications with the atomic library provided by GCC which takes care of atomic
-memory operations.
-
-\subsubsection{-fno-use-default-alignment}
-
-To implement this flag we had to modify many parts of Clang. Because we are
-working with memory operations in this flag, we had to patch all calls to
-CreateStore, CreateLoad, CreateMemCpy, etc \todo{cite doxygen} methods. This was
+CreateStore, CreateLoad, CreateMemCpy, etc~\cite{cgbuilder} methods. This was
 a non-trivial task as there are tens of calls to these methods in different
 subsystems of Clang.
 

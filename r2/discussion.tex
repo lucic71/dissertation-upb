@@ -1,5 +1,45 @@
 \section{Discussion} \label{sec:discussion}
 
-\todo{talk about the benchmarks that we plan to add}
-\todo{talk about the limitations of current benchmark strategy}
-\todo{talk about the current method of discovering UBs}
+In this section we discuss current limitations regarding the benchmarking
+process for evaluating the peformance impact of undefined behavior
+optimizations.
+
+\subsection{Categorization of Benchmarks}
+
+Current benchmark suite needs more investigation so that we understand what are
+its biases and its limitations. Our initial strategy of creating this benchmark
+was to gather as much applications written in C/C++ and that contain real loads,
+as opposed to synthetic loads. However we did no categorization to understand
+whether we cover a wide range of application or whether the current application
+categories overlap.
+
+To do this categorization work, we will have to go through each benchmark and
+discover language patterns that apply to more benchmarks. Such a language
+pattern might be the usage of hot loops that contain most of the computation and
+logic of the program. Another pattern might be the heavy usage of network
+communication.
+
+After we finish this categorization task, we can understand better the results
+and add new categories as needed.
+
+\subsection{Benchmarking Strategy}
+
+To gather meaningful results for our benchmarks we rely on Phoronix's feature of
+rerunning each benchmark a number of times so that the standard error between
+the data points is at a minimum. However this might give unreliable results as
+in the general case the distribution of the results is not standard. To fill
+this gap we can use another feature of Phoronix that returns the confidence
+interval for each result.
+
+Using the above mentioned features together, we can spot the benchmarks for
+which a higher degree of noise was introduced and try to reduce it. 
+
+\subsection{Discovering New Undefined Behavior Optimizations}
+
+Even if all undefined behavior instances are described in the C or C++ languages
+standard, the compiler might not make use of all of them. Up until this moment
+we relied on our experience to discover new undefiend behavior optimizations.
+However, in the future we want to rely on automated tools to spot the
+optimization passes that exploit undefined behavior. To do that we plan to use
+Alive2~\cite{lopes2021alive2}, which is an automatic verification tool for LLVM
+optimization passes.
