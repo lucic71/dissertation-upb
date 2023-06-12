@@ -1,5 +1,13 @@
 \section{Introduction}
 
+Our work is focused on evaluating the performance impact of undefined behavior
+optimizations. Traditionally, undefined behavior was used as a free ticket to
+issue various types of optimizations targeting either code speed or code size.
+The impact of this type of optimization is already well known for
+micro-benchmarks, however, there is no study covering the impact for real loads.
+We fill this gap by benchmarking various instances of undefined behavior
+optimizations in Clang/LLVM on real application loads written in C/C++.
+
 The work in this semester was broken down into two parts. First, we started by
 creating the infrastructure for running the benchmarks. Our main goal in this
 regard was to gather a set of popular applications written in C and C++. After
