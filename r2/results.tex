@@ -10,7 +10,7 @@ MicroArch: IvyBridge
 
 To gather relevant results, we compiled the whole benchmark suite presented in
 Table~\ref{tab:suite} with a single flag presented in Section~\ref{sec:flags} at
-a time. Furhtermore we used as baseline the benchmarks compiled with no flag
+a time. Furthermore we used as baseline the benchmarks compiled with no flag
 presented in Section~\ref{sec:flags}. After this step we used Phoronix to run
 the generated binaries for each benchmark.
 
@@ -33,7 +33,7 @@ For each flag, in nearly 90\% of the cases, the performance impact is
 insignificant, i.e. can be considered noise as it is placed between -2\% and
 +2\%. 
 
-\textit{-fwrapv} has the biggest overall negative peformance impact, i.e. 11\%
+\textit{-fwrapv} has the biggest overall negative performance impact, i.e. 11\%
 of the results for \textit{-fwrapv} have negative performance impact. This flag
 also exhibits the highest negative performance impact as presented in
 Figure~\ref{fig:espeak}. Other benchmarks with negative impact: FFTW - Float +
@@ -41,7 +41,7 @@ SSE - Size: 1D FFT Size 256, uvg266 (Video Encoder). Other benchmarks with
 positive impact: OpenSSL - RSA4096.
 
 \textit{-fno-strict-aliasing} is the most balanced flag up until this moment.
-3\% of the results are positive pefrormance impact and 8.2\% of the are negative
+3\% of the results are positive performance impact and 8.2\% of the are negative
 performance impact. The outliers for this flag are also very close to the noise
 thresholds.
 
@@ -53,8 +53,8 @@ benchmark, \textit{-fconstrain-bool-value} also presents a considerable positive
 performance impact.
 
 \textit{-fno-use-default-alignment} exhibits 2 times more positive performance
-impact than negative peformance impact. This result is unexpected because in
-theory the behavior that this flag exhibits should decrease the peformance of
+impact than negative performance impact. This result is unexpected because in
+theory the behavior that this flag exhibits should decrease the performance of
 memory accesses.
 
 \begin{figure}[H]

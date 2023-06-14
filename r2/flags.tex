@@ -1,6 +1,6 @@
 \section{Compiler Configurations based on Undefined Behavior} \label{sec:flags}
 
-After we defined the benchmark suite, we focued on evaluating the performance
+After we defined the benchmark suite, we focused on evaluating the performance
 impact of various undefined behavior optimizations. In this section we present
 first the already-implemented configurations for the above mentioned
 optimizations and second we present the configurations that we implemented.
@@ -15,7 +15,7 @@ We benefited from 5 flags in this category.
 \textit{-fwrapv} instructs the compiler to assume that signed arithmetic
 overflow of addition, subtraction and multiplication wraps around using
 twos-complement representation. In LLVM, this has the impact of dropping the
-\textit{nsw}~\cite{nsw-def} attribute in the above mentionted aritmetic
+\textit{nsw}~\cite{nsw-def} attribute in the above mentioned arithmetic
 operations.
 
 \textit{-fno-strict-aliasing} instructs the compiler to apply the strictest
@@ -75,8 +75,8 @@ development.
 
 \subsubsection{-fconstrain-shift-value}
 To implement \textit{-fconstrain-shift-value} we had to do modifications in the
-frontend of the comiler. The OpenCL specification already implemented this
-behavior in EmitShl and EmitShr functions. Thus, we extented this by adding the
+frontend of the compiler. The OpenCL specification already implemented this
+behavior in EmitShl and EmitShr functions. Thus, we extended this by adding the
 new flag for our purposes, as presented in
 Listing~\ref{lst:fconstrain-shift-value}.
 
@@ -183,7 +183,7 @@ memory operations.
 \subsubsection{-zero-uninit-loads and -trap-on-oob}
 
 For implementing these flags we had do to modifications in the middle-end of the
-copmiler. They are still in progress as the level of difficulty for implementing
+compiler. They are still in progress as the level of difficulty for implementing
 them is greater than the previous flags.
 
 For \textit{-zero-uninit-loads} the implementation difficulty is to find the
