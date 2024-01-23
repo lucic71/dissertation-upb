@@ -1,12 +1,17 @@
 \begin{abstract} 
 \noindent
-Clang/LLVM uses undefined behavior to issue optimizations. In this report, we
-present the impact of this class of optimizations on a benchmarking suite built
-using Phoronix. In this suite we focus on a diverse set of application
-categories, ranging from compression algorithms and image processing to
-web-servers and databases. To extensively cover the impact on these
-applications, we provide 10 configurations that modify the behavior of the
-compiler when exploiting undefined behavior in optimizations. Current results
-show that in 90\% of cases the impact of undefined behavior optimizations is
-insignificant.
+% - we ran alive on the benchmarking suite
+% - we developed some new flags based on the findings in alive
+% - we replaced some benchmarks because they did not run correctly on arm
+% - we solved the variability of the bencmarks on ARM
+% - we are investigating performance drops on x86 and run the suite on ARM
+
+Clang/LLVM uses undefined behavior to issue optimizations. We analyze the impact
+of this class of optimizations on a benchmarking suite built using Phoronix. We
+used the suite and Alive2 to discover additional cases where the compiler
+exploits undefined behavior. We found six cases that we integrated in our
+benchmarking infrastructure. Then we carried on with running the benchmarks and
+stabilize their results on both x86 and ARM. Finally, we started the analysis of
+the performance regressions on x86.
+
 \end{abstract}
