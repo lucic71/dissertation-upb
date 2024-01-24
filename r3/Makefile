@@ -2,14 +2,16 @@
 #   * texlive-latex-base
 #   * texlive-latex-extra
 #   * texlive-science
+#   * inkscape
 
 PROJECT=main
+PDFLATEX=pdflatex --shell-escape
 
 build:
-	pdflatex ${PROJECT}.tex
+	${PDFLATEX} ${PROJECT}.tex
 	bibtex ${PROJECT}
-	pdflatex ${PROJECT}.tex
-	pdflatex ${PROJECT}.tex
+	${PDFLATEX} ${PROJECT}.tex
+	${PDFLATEX} ${PROJECT}.tex
 
 show:
 	evince ${PROJECT}.pdf
