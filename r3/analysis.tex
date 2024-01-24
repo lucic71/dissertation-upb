@@ -1,0 +1,56 @@
+\section{Analysis of performance regressions}
+
+Currently we are analysing a performance regression in the simdjson-2.0.4
+benchmark on Intel. For the -fdrop-align-attr there is a loss of 12.3\%
+performance compared to baseline. In terms of raw performance, this underlies a
+throughput drop from 2 GB/s to 1.77 GB/s. 
+
+The purpose of -fdrop-align-attr is to drop every \textit{align} attribute for
+each argument of every function. By doing this we make sure that no undefined
+behavior related to alignment is generated~\cite{align-semantics}. However as
+seen in the above percentage, a good amount of performance is lost by using this
+approach.
+
+To find the function/s that triggered the regression we used
+elf_diff~\cite{elfdiff}, a tool for comparing ELF binaries in a visual way as
+well as in a programatical way. Using elf_diff we were able to get an idea of
+the changes caused by dropping the \textit{align} attribute. Then we gathered
+all the affected functions and started a binary search to reduce to a minimum
+the set of affected functions that also caused the peformance regression.
+
+After finding the problematic function, Listing~\ref{lst:simdjson_ondemand_run},
+we started to analyze how each argument of this function is affected by the
+\textit{align} attribute, Listing~\ref{lst:simdjson_ondemand_run_llvm}
+
+\begin{lstlisting}[language=C++, style=Cstyle, caption={Function that caused
+performance regressions}, label={lst:simdjson_ondemand_run}]
+
+partial_tweets::simdjson_ondemand::run(simdjson::padded_string& this, std::vector<partial_tweets::tweet<std::basic_string_view<char, std::char_traits<char> > > json, std::allocator<partial_tweets::tweet<std::basic_string_view<char, std::char_traits<char> > > > >& result)
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=llvm, style=Cstyle, caption={LLVM representation of
+arguments of partial_tweets::simdjson_ondemand::run}, label={lst:simdjson_ondemand_run_llvm}]
+
+ptr noundef nonnull align 8 dereferenceable(48) %this, ptr noundef nonnull align 8 dereferenceable(16) %json, ptr noundef nonnull align 8 dereferenceable(24) %result
+
+\end{lstlisting}
+
+Even if every argument has an \textit{align} attribute, we found that that only
+by dropping \textit{align} from the this pointer, i.e. first parameter, and
+keeping the attributes of the other parameters intact, the performance drops.
+
+To find what optimization pass was causing the regerssion, we used the -mllvm
+-print-after-all option with Clang and diff'ed the output with and without
+\textit{align} enabled on the this pointer. We found that the Loop Invariant
+Code Motion (LICM) pass was generating suboptimal code that fed to subsequent
+passes. More specifically, because alignment information was missing from the
+this pointer, LICM was not able to hoist specific instructions out of the main
+loop which caused the generated code to be more expensive in terms of
+instructions per loop iteration.
+
+At this moment we carry on the analysis as we want to understand what part of
+LLVM instructs LLVM to not hoist the instruction out of the loop. We suspect
+that because alignment information is missing, alias analysis cannot fully
+generate optimal information for LICM.
