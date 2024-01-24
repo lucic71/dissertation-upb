@@ -38,12 +38,12 @@ suite of 25 benchmarks with the following configurations:
 This results in 20 builds for each benchmark that were run on the benchmarking
 servers, i.e. an Intel Xeon E5-2680 v2 @ 3.60GHz and an ARM Neoverse-N1 @ 3.00
 GHz. To make sure that we get deterministic results for the benchmarks we issued
-various techniques that stabilized our build, they include pinning the processes
+various techniques for stabilizing our builds, they include pinning the processes
 to only one NUMA node and dropping the frequency of the processor.
 
 After we gathered the first batch of results, we started analyzing them to
 understand what parts of LLVM caused the performance regressions and how can we
-recover the performance. Current results indicate losses of up to \todo{} that
+recover the performance. Current results indicate losses of up to 15\% that
 need careful investigation. At this moment we are investigating a performance
 loss in simdjson caused by the absence of the~\textit{align} attribute on a
 pointer argument from a performance critical function.
