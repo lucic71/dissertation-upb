@@ -12,7 +12,7 @@ In the past semester we compiled a benchmarking suite using Phoronix Test Suite
 that focuses on various types of applications ranging from compression
 algorithms to web servers. Besides that, we gathered and created various
 configurations, controled by compiler flags, that exploit undefined behavior in
-optimizations.
+the optimizations pipeline of LLVM.
 
 In this semester we continued the work on developing new compiler flags for
 controlling undefined behavior exploitation. Some of them were mentioned in the
@@ -30,9 +30,9 @@ After finding all possible sources of undefined behavior, we carried on with
 running the preformance experiments. For this we compiled each benchmark in the
 suite of 25 benchmarks with the following configurations:
 \begin{itemize}
-  \item baseline, i.e. without any UB flag
-  \item one UB flag at a time
-  \item all UB flags combined
+  \item baseline, i.e. without any undefined behavior flag
+  \item one undefined behavior flag at a time
+  \item all undefined behavior flags combined
 \end{itemize}
 
 This results in 20 builds for each benchmark that were run on the benchmarking

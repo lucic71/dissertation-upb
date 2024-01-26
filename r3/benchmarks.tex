@@ -4,15 +4,15 @@ After developing all the flags that control the behavior of the compiler with
 regards to undefined behavior exploitation, we started the performance
 experiments. There is a total of 20 configurations that we used:
 \begin{itemize}
-  \item baseline, i.e. without any UB flag
-  \item one UB flag at a time
-  \item all UB flags combined
+  \item baseline, i.e. without any undefined behavior flag
+  \item one undefined behavior flag at a time
+  \item all undefined behavior flags combined
 \end{itemize}
 
 Considering that we have 25 benchmarks, each with a variable number of tests
 that can finish in a matter of minutes or in a matter of hours, the whole
-benchmarking process took us approximately two weeks for both our servers, i.e.
-an Intel Xeon E5-2680 v2 @ 3.60GHz and an ARM Neoverse-N1 @ 3.00 GHz.
+benchmarking process took us approximately two weeks for each of our servers,
+i.e. an Intel Xeon E5-2680 v2 @ 3.60GHz and an ARM Neoverse-N1 @ 3.00 GHz.
 
 Before analyzing the results we had to make sure that the benchmarking
 environment is stable so that our results do not show a high degree of variance.
@@ -60,3 +60,5 @@ caused by the memory access patterns displayed by the benchmarks.
 After solving the instability problems, we continued with gathering of results
 on both Intel and ARM. Currently we have the -O2 numbers for both Intel and ARM,
 we plan to continue to gather the numbes for -O3, -Os and -Oz.
+
+% TODO: maybe put some plots here with the results until now

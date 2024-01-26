@@ -1,9 +1,10 @@
 \section{Analysis of performance regressions}
 
-Currently we are analysing a performance regression in the simdjson-2.0.4
-benchmark on Intel. For the -fdrop-align-attr there is a loss of 12.3\%
-performance compared to baseline. In terms of raw performance, this underlies a
-throughput drop from 2 GB/s to 1.77 GB/s. 
+Currently we are analysing a performance regression in the
+simdjson-2.0.1~\cite{simdjsonbenchmark} benchmark on Intel. For the
+-fdrop-align-attr there is a loss of 12.3\% performance compared to baseline. In
+terms of raw performance, this underlies a throughput drop from 2 GB/s to 1.77
+GB/s. 
 
 The purpose of -fdrop-align-attr is to drop every \textit{align} attribute for
 each argument of every function. By doing this we make sure that no undefined
@@ -11,7 +12,7 @@ behavior related to alignment is generated~\cite{align-semantics}. However as
 seen in the above percentage, a good amount of performance is lost by using this
 approach.
 
-To find the function/s that triggered the regression we used
+To find the functions that triggered the regression we used
 elf_diff~\cite{elfdiff}, a tool for comparing ELF binaries in a visual way as
 well as in a programatical way. Using elf_diff we were able to get an idea of
 the changes caused by dropping the \textit{align} attribute. Then we gathered
@@ -51,6 +52,6 @@ loop which caused the generated code to be more expensive in terms of
 instructions per loop iteration.
 
 At this moment we carry on the analysis as we want to understand what part of
-LLVM instructs LLVM to not hoist the instruction out of the loop. We suspect
+LLVM instructs LICM to not hoist the instruction out of the loop. We suspect
 that because alignment information is missing, alias analysis cannot fully
-generate optimal information for LICM.
+generate helpful information for LICM.
