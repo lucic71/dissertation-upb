@@ -14,7 +14,7 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
-\usepackage{xcolor}
+\usepackage[svgnames]{xcolor}
 \usepackage{xparse}
 \usepackage{listings}
 \usepackage{llvm/lang}
@@ -127,3 +127,15 @@
   keywordsprefix={\%},
 }
 \makeatother
+
+  \definecolor{diffstart}{named}{Grey}
+  \definecolor{diffincl}{named}{Green}
+  \definecolor{diffrem}{named}{OrangeRed}
+
+\usepackage{listings}
+  \lstdefinelanguage{diff}{
+    basicstyle=\ttfamily\small,
+    morecomment=[f][\color{diffstart}]{@@},
+    morecomment=[f][\color{diffincl}]{+\ },
+    morecomment=[f][\color{diffrem}]{-\ },
+  }
