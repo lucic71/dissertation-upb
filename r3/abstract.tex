@@ -3,8 +3,8 @@
 % - we ran alive on the benchmarking suite
 % - we developed some new flags based on the findings in alive
 % - we replaced some benchmarks because they did not run correctly on arm
-% - we solved the variability of the bencmarks on ARM
-% - we are investigating performance drops on x86 and run the suite on ARM
+% - we solved the variability of the bencmarks on arm
+% - we are investigating performance drops on x86 and run the suite on arm
 
 Clang/LLVM uses undefined behavior to issue optimizations. We analyze the impact
 of this class of optimizations on a benchmarking suite built using Phoronix.
@@ -12,6 +12,6 @@ Before we ran the performance experiments, we used the suite and Alive2 to
 discover additional cases where the compiler exploits undefined behavior. We
 found six cases that we integrated in our benchmarking infrastructure. Then we
 carried on with running the benchmarks and stabilize their results on both x86
-and ARM. Finally, we started the analysis of the performance regressions on x86.
+and arm. Finally, we started the analysis of the performance regressions on x86.
 
 \end{abstract}

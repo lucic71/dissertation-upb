@@ -1,6 +1,6 @@
-\section{Finding new exploatations of undefined behavior}
+\section{Finding new exploitations of undefined behavior}
 
-We explored various flags that deal with the exploatation of undefined behavior.
+We explored various flags that deal with the exploitation of undefined behavior.
 Some of them were already integrated in LLVM, e.g. -fwrapv and some of them were
 developed by us based on our previous experience and based on
 LangRef~\cite{langref}. However, there is a third category of flags that we
@@ -98,7 +98,7 @@ One can spot the poison values in \%rc and \%sb64_target_rate from the detailed
 information section of the output. They cause the subsequent "UB triggered!"
 because as per
 LangRef~\cite{load-semantics} when using a load instruction, "if pointer is not a
-well-defined value, the behavior is undefined.". To stop this exploatation of
+well-defined value, the behavior is undefined.". To stop this exploitation of
 undefined behavior from taking place, we removed the \textit{inbounds} keyboard
 from the GEP instruction directly from Clang. By removing \textit{inbounds} we
 made sure that none of the cases described in~\cite{getelementptr-semantics} is

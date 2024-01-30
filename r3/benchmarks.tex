@@ -12,13 +12,13 @@ experiments. There is a total of 20 configurations that we used:
 Considering that we have 25 benchmarks, each with a variable number of tests
 that can finish in a matter of minutes or in a matter of hours, the whole
 benchmarking process took us approximately two weeks for each of our servers,
-i.e. an Intel Xeon E5-2680 v2 @ 3.60GHz and an ARM Neoverse-N1 @ 3.00 GHz.
+i.e. an Intel Xeon E5-2680 v2 @ 3.60GHz and an arm Neoverse-N1 @ 3.00 GHz.
 
 Before analyzing the results we had to make sure that the benchmarking
 environment is stable so that our results do not show a high degree of variance.
 In the past semester we ran a couple of experiments on the Intel server and we
 have seen a satisfactory level of variance, e.g. 2\%. However, this semester we
-also aquired an ARM server on which we ran the experiments and which showed
+also aquired an arm server on which we ran the experiments and which showed
 levels of variance way above the satisfactory threshold. This was a major
 problem as no significant conclusion could be drawn from benchmarks with this
 level of instability.
@@ -44,7 +44,7 @@ at 1.50GHz and at 2.00GHz seems acceptable, there are other tests in aom-av1
 that do not show satisfactory variance for 1.50GHz and 2.00GHz. Because of this
 we chose to decrease the frequency to 1.00GHz.
 
-The question on why the benchmarks are more unsable on ARM than on x86 still
+The question on why the benchmarks are more unsable on arm than on x86 still
 persists. We have a couple of theories on why this might happen but we need to
 do more experiments in order to validate them. They include: CPU frequency
 instability caused by the thermal controllers or unstable memory access times
@@ -58,7 +58,7 @@ caused by the memory access patterns displayed by the benchmarks.
 \end{figure}
 
 After solving the instability problems, we continued to gather and analyse the
-results on both Intel and ARM.
+results on both Intel and arm.
 
 On one hand, Figure~\ref{fig:x86_affected_bms_per_flag} and
 Figure~\ref{fig:arm_affected_bms_per_flag} present the quantitative impact of
@@ -114,5 +114,5 @@ utilization patterns.
   \label{fig:arm_impact_per_flag}
 \end{figure}
 
-Currently we have the -O2 numbers for both Intel and ARM, we plan to continue to
+Currently we have the -O2 numbers for both Intel and arm, we plan to continue to
 gather the numbes for -O3, -Os and -Oz.
