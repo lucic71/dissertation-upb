@@ -133,7 +133,7 @@ On BRL-CAD and OpenSSL we found a bug in Alive2 because it cannot havoc
 locally-allocated pointers on function calls. Listing~\ref{lst:openssl_code} is
 a snippet from OpenSSL that showcases the problem. Because abuf and bbuf are
 pointers allocated inside xname_cmp, Alive2 cannot continue the analysis of the
-pointers inside i2d_X509_NAME. This is not a fundmental problem in Alive2, the
+pointers inside i2d_X509_NAME. This is not a fundamental problem in Alive2, the
 functionality is not currently implemented.
 
 \begin{lstlisting}[style=Cstyle, caption={OpenSSL code that was causing Alive2 bug}, label={lst:openssl_code}]
@@ -144,7 +144,7 @@ static int xname_cmp(const X509_NAME *a, const X509_NAME *b)
 
     ...
 
-    // Alive2 cannot propatage the locally allocated pointers in i2d_X509_NAME
+    // Alive2 cannot propagate the locally allocated pointers in i2d_X509_NAME
     alen = i2d_X509_NAME((X509_NAME *)a, &abuf);
     blen = i2d_X509_NAME((X509_NAME *)b, &bbuf);
 

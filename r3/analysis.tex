@@ -14,10 +14,10 @@ approach.
 
 To find the functions that triggered the regression we used
 elf_diff~\cite{elfdiff}, a tool for comparing ELF binaries in a visual way as
-well as in a programatical way. Using elf_diff we were able to get an idea of
+well as in a programmatic way. Using elf_diff we were able to get an idea of
 the changes caused by dropping the \textit{align} attribute. Then we gathered
 all the affected functions and started a binary search to reduce to a minimum
-the set of affected functions that also caused the peformance regression.
+the set of affected functions that also caused the performance regression.
 
 After finding the problematic function, Listing~\ref{lst:simdjson_ondemand_run},
 we started to analyze how each argument of this function is affected by the
@@ -42,8 +42,8 @@ Even if every argument has an \textit{align} attribute, we found that that only
 by dropping \textit{align} from the \textit{this} pointer, i.e. first parameter, and
 keeping the attributes of the other parameters intact, the performance drops.
 
-To find what optimization pass was causing the regerssion, we used the -mllvm
--print-after-all option with Clang and diff'ed the output with and without
+To find what optimization pass was causing the regression, we used the -mllvm
+-print-after-all option with Clang and diffed the output with and without
 \textit{align} enabled on the \textit{this} pointer,
 Listing~\ref{lst:licm_diff}. We found that the Loop Invariant Code Motion (LICM)
 pass was generating suboptimal code that fed to subsequent passes. More
