@@ -57,8 +57,62 @@ caused by the memory access patterns displayed by the benchmarks.
   \label{fig:EncoderModeSpeed11RealtimeInputBosphorus4K}
 \end{figure}
 
-After solving the instability problems, we continued with gathering of results
-on both Intel and ARM. Currently we have the -O2 numbers for both Intel and ARM,
-we plan to continue to gather the numbes for -O3, -Os and -Oz.
+After solving the instability problems, we continued to gather and analyse the
+results on both Intel and ARM.
 
-% TODO: maybe put some plots here with the results until now
+On one hand, Figure~\ref{fig:x86_affected_bms_per_flag} and
+Figure~\ref{fig:arm_affected_bms_per_flag} present the quantitative impact of
+each flag over the benchmark suite, i.e. how each flag affects the benchmarks.
+We define affected benchmarks as benchmarks for which there exists a performance
+improvement over 2\% or a performance decrease over 2\%.
+
+In these figures we expand the definition of a benchmark. In the beginning of
+this section we stated that our suite consists of 25 benchmarks. However, these
+25 benchmarks can be considered as 25 separate application that, in turn,
+contain a variable number of sub-benchmarks, or tests. This expansion results in
+over 140 benchmarks.
+
+We expected the flags to affect differently the benchmarks on the two hardware
+architectures since they use different operating system configurations and have
+different hardware characteristics. The cumulative effect of the flags in bigger
+on arm than on x86. Plus, for each individual flag, arm has a bigger impact on
+the benchmark than x86. We plan to answer in the following semester what is the
+cause of these differences.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{x86_affected_bms_per_flag}
+  \caption{Number of affected benchmarks by each flag on x86 for -O2}
+  \label{fig:x86_affected_bms_per_flag}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{arm_affected_bms_per_flag}
+  \caption{Number of affected benchmarks by each flag on arm of -O2}
+  \label{fig:arm_affected_bms_per_flag}
+\end{figure}
+
+On the other hand, Figure~\ref{fig:x86_impact_per_flag} and
+Figure~\ref{fig:arm_impact_per_flag} present the qualitative impact of each flag
+over the benchmark suite. No flag exhibits overall negative impact or overall
+positive impact. Each benchmark is affected differently by the same flag. This
+happens because each benchmarked application contains different resource
+utilization patterns.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{x86_impact_per_flag}
+  \caption{Impact of each flag on the suite on x86 for -O2}
+  \label{fig:x86_impact_per_flag}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{arm_impact_per_flag}
+  \caption{Impact of each flag on the suite on arm for -O2}
+  \label{fig:arm_impact_per_flag}
+\end{figure}
+
+Currently we have the -O2 numbers for both Intel and ARM, we plan to continue to
+gather the numbes for -O3, -Os and -Oz.
