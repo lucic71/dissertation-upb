@@ -1,7 +1,7 @@
 \section{Finding new exploitations of undefined behavior}
 
 We explored various flags that deal with the exploitation of undefined behavior.
-Some of them were already integrated in LLVM, e.g. -fwrapv and some of them were
+Some of them were already integrated in LLVM, e.g. -fwrapv, and some of them were
 developed by us based on our previous experience and based on
 LangRef~\cite{langref}. However, there is a third category of flags that we
 developed based on automatic exploration using Alive2.
@@ -11,10 +11,10 @@ optimizations. Roughly, after each optimization pass it checks whether the
 Intermediate Representation (IR) contains undefinedness. This helps us find
 places in the optimization pipeline that exploit undefined behavior.
 
-We decided to patch Clang, the frontend for C/C++, when we found an undefined
-behavior exploitation in the optimization pipeline of LLVM. By making sure that
-we generate code free of undefined behavior directly from the source, i.e.
-Clang, we made sure that further optimization cannot take any advantage or
+We decided to patch Clang, the frontend for C/C++, whenever we found an
+undefined behavior exploitation in the optimization pipeline of LLVM. By making
+sure that we generate code free of undefined behavior directly from the source,
+i.e.  Clang, we made sure that further optimization cannot take any advantage or
 further propagate the exploitation of undefined behavior. For example, instead
 of patching each place in LLVM that takes advantage by division by 0, we
 generated code from Clang that guarded each division so that LLVM cannot further
@@ -25,19 +25,19 @@ optimize the division.
 
 The following is an example of undefined behavior detected using Alive2.
 Listing~\ref{lst:is_sb_aq_enabled_c_code} contains a C function from the
-aom-av1~\cite{aomav1benchmark} benchmark that returns a value based on a pointer
-received as parameter. Listing~\ref{lst:is_sb_aq_enabled_alive} contains the
-corresponding Alive2 output for is_sb_aq_enabled. The output can be broken down
-in multiple parts:
+aom-av1~\cite{aomav1benchmark} benchmark that returns a boolean value based on a
+pointer received as parameter. Listing~\ref{lst:is_sb_aq_enabled_alive} contains
+the corresponding Alive2 output for is_sb_aq_enabled. The output can be broken
+down in multiple parts:
 
-\begin{itemize}
+\begin{enumerate}
   \item The IR before the optimization and the IR before the optimization, they
 are delimited by \(=>\)
   \item Information about the validity of the transformation, in this case we
 get an "Transformation doesn't verify! (unsound) ERROR: Source has guardable UB"
   \item Detailed information about the cause of the error including values that
 triggered the error and the memory state
-\end{itemize}
+\end{enumerate}
 
 \begin{lstlisting}[style=Cstyle, caption={C code for is_sb_aq_enabled}, label={lst:is_sb_aq_enabled_c_code}]
 static bool is_sb_aq_enabled(const AV1_COMP *const cpi) {
@@ -46,6 +46,7 @@ static bool is_sb_aq_enabled(const AV1_COMP *const cpi) {
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Alive2 output on is_sb_aq_enabled}, label={lst:is_sb_aq_enabled_alive}]
+1.
 define i1 @is_sb_aq_enabled(ptr noundef %cpi) null_pointer_is_valid zeroext {
 %entry:
   %cpi.addr = alloca i64 8, align 8
@@ -66,9 +67,12 @@ define i1 @is_sb_aq_enabled(ptr noundef %cpi) null_pointer_is_valid zeroext {
   %cmp = icmp sge i32 %0, 256
   ret i1 %cmp
 }
+
+2.
 Transformation doesn't verify! (unsound)
 ERROR: Source has guardable UB
 
+3.
 Example:
 ptr noundef %cpi = pointer(non-local, block_id=0, offset=-388623)
 
@@ -96,13 +100,14 @@ i32 %0 = UB triggered!
 
 One can spot the poison values in \%rc and \%sb64_target_rate from the detailed
 information section of the output. They cause the subsequent "UB triggered!"
-because as per
-LangRef~\cite{load-semantics} when using a load instruction, "if pointer is not a
-well-defined value, the behavior is undefined.". To stop this exploitation of
-undefined behavior from taking place, we removed the \textit{inbounds} keyboard
-from the GEP instruction directly from Clang. By removing \textit{inbounds} we
-made sure that none of the cases described in~\cite{getelementptr-semantics} is
-triggered, hence no undefined behavior is triggered.
+because as per LangRef~\cite{load-semantics} when using a load instruction, "if
+pointer is not a well-defined value, the behavior is undefined.". To stop this
+exploitation of undefined behavior from taking place, we removed the
+\textit{inbounds} keyboard from the GEP instruction directly from Clang. By
+removing \textit{inbounds} we made sure that the GEP instructions where \%rc and
+\%sb64_target_rate are created will not generate undefinedness as none of the
+cases described in~\cite{getelementptr-semantics} is triggered, hence no
+undefined behavior is triggered.
 
 We integrated the functionality of removing \textit{inbounds} from GEP
 instructions in a flag called -fdrop-inbounds-from-gep. It only takes effect in
@@ -129,7 +134,7 @@ vectorization~\cite{loopvectbug}, the LoopVectorizer was adding an misaligned
 store because it was not respecting the alignment of the original store
 instruction.
 
-On BRL-CAD and OpenSSL we found a bug in Alive2 because it cannot havoc
+On BRL-CAD and OpenSSL we found a bug in Alive2 because it cannot analyse
 locally-allocated pointers on function calls. Listing~\ref{lst:openssl_code} is
 a snippet from OpenSSL that showcases the problem. Because abuf and bbuf are
 pointers allocated inside xname_cmp, Alive2 cannot continue the analysis of the

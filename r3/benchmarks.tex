@@ -44,7 +44,7 @@ at 1.50GHz and at 2.00GHz seems acceptable, there are other tests in aom-av1
 that do not show satisfactory variance for 1.50GHz and 2.00GHz. Because of this
 we chose to decrease the frequency to 1.00GHz.
 
-The question on why the benchmarks are more unusable on arm than on x86 still
+The question on why the benchmarks are more unstable on arm than on x86 still
 persists. We have a couple of theories on why this might happen but we need to
 do more experiments in order to validate them. They include: CPU frequency
 instability caused by the thermal controllers or unstable memory access times
@@ -77,7 +77,7 @@ architectures since they use different operating system configurations and have
 different hardware characteristics. The cumulative effect of the flags in bigger
 on arm than on x86. Plus, for each individual flag, arm has a bigger impact on
 the benchmark than x86. We plan to answer in the following semester what is the
-cause of these differences.
+exact cause of these differences.
 
 \begin{figure}[H]
   \centering
@@ -116,3 +116,7 @@ utilization patterns.
 
 Currently we have the -O2 numbers for both Intel and arm, we plan to continue to
 gather the numbers for -O3, -Os and -Oz.
+
+While we are gathering the numbers for the rest of optimization levels, we
+started the analysis of the performance regressions for -O2 on x86. The next
+section talk about the analysis process and current findings.

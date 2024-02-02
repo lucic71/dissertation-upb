@@ -8,11 +8,11 @@ micro-benchmarks, however, there is no study covering the impact for real loads.
 We fill this gap by benchmarking various instances of undefined behavior
 optimizations in Clang/LLVM on real application loads written in C/C++.
 
-In the past semester we compiled a benchmarking suite using Phoronix Test Suite
-that focuses on various types of applications ranging from compression
-algorithms to web servers. Besides that, we gathered and created various
-configurations, controlled by compiler flags, that exploit undefined behavior in
-the optimizations pipeline of LLVM.
+In the past semester we compiled a benchmarking suite~\ref{tab:suite} using
+Phoronix Test Suite that focuses on various types of applications ranging from
+compression algorithms to web servers. Besides that, we gathered and created
+various configurations, controlled by compiler flags, that exploit undefined
+behavior in the optimizations pipeline of LLVM.
 
 In this semester we continued the work on developing new compiler flags for
 controlling undefined behavior exploitation. Some of them were mentioned in the
@@ -24,7 +24,7 @@ verification tool for LLVM optimizations, to find new flags for our benchmarking
 infrastructure. We found six more flags that are mainly concerned with various
 LLVM attributes that can cause undefined behavior, for
 example~\textit{noalias},~\textit{align} or~\textit{dereferenceable}. In total
-we have 18 flags for controlling undefined behavior exploitation.
+we have 18 flags \ref{tab:flags} for controlling undefined behavior exploitation.
 
 After finding all possible sources of undefined behavior, we carried on with
 running the performance experiments. For this we compiled each benchmark in the

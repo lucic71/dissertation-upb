@@ -87,7 +87,9 @@ without the \textit{align} attribute on the \textit{this} pointer}, label={lst:l
 
 The instructions could not be hoisted because loads can only be hoisted if the
 pointer is known to be dereferenceable and the pointer is at least as aligned as
-the load. This requirement exists because not all hardware architectures support
+the load. Since the \textit{this} pointer has alignment 1 and the load has
+alignment 8, this condition is not met hence the load cannot be hoisted outside
+the loop. This requirement exists because not all hardware architectures support
 unaligned load, e.g. SPARC. This imposes a limitation on architectures such as
 x86 or arm that do support unaligned loads.
 
@@ -100,3 +102,8 @@ isDereferenceableAndAlignedPointer~\cite{isDereferenceableAndAlignedPointer}
 will fail because isAligned~\cite{isAligned} returns false as BA, i.e. the
 alignment of the pointer, is 1 and Alignment, i.e. the alignment of the
 load instruction, is 8.
+
+We continue to investigate methods of restoring the original performance by
+analysing how the \textit{this} pointer was created, i.e. through a \textit{new}
+call or through a memory read, so that we manage to save the alignment
+information and not depend on the argument attribute.
