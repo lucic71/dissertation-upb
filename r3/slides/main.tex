@@ -1,0 +1,112 @@
+\documentclass[
+	12pt
+]{beamer}
+
+\graphicspath{{Images/}{./}}
+
+\usepackage{booktabs}
+\usetheme{Pittsburgh}
+\usefonttheme{default}
+\usepackage{palatino}
+\usepackage[default]{opensans}
+\usepackage[inkscapeformat=png]{svg}
+\useinnertheme{circles}
+\useoutertheme{default}
+
+\setbeamertemplate{footline}[page number]
+\setbeamertemplate{navigation symbols}{}
+
+\title[Short Title]{Performance Impact of Undefined Behavior Optimizations in C/C++}
+\author[]{Lucian Popescu* \and Răzvan Deaconscu* \and Nuno Lopes**}
+\institute[]{*Facultatea de Automatică și Calculatoare, Universitatea
+Politehnică  din București \\
+**Instituto Superior Técnico, Universidade de Lisboa
+}
+
+\date[\today]{\today}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Background}
+  \begin{itemize}
+    \item Undefined behavior is used as a free ticket for optimizations
+    \item We know their impact on microbenchmarks
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Past semester}
+  \begin{itemize}
+    \item We created a C/C++ benchmarking suite using Phoronix
+    \item We created flags for controlling undefined behavior optimizations
+    \begin{itemize}
+      \item Already existed: -fwrapv, -fstrict-enums, etc
+      \item Created by us: -fconstrain-shift-value, -mllvm -zero-uninit-loads, etc
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (1)}
+  \begin{itemize}
+    \item We ran Alive2 over the suite to discover new flags
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=0.8\linewidth]{alive2-fig.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (2)}
+  \begin{itemize}
+    \item We ran the suite on ARM as well and stabilized the results
+  \end{itemize}
+  \begin{center}
+    \includesvg[width=1.0\linewidth]{EncoderModeSpeed11RealtimeInputBosphorus4K.svg}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (3)}
+  \begin{center}
+    \includegraphics[width=1.1\linewidth]{x86_impact_per_flag.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (3)}
+  \begin{center}
+    \includegraphics[width=1.1\linewidth]{arm_impact_per_flag.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (4)}
+  \begin{itemize}
+    \item We analyzed a performance drop of 12\% in the simdjson benchmark
+    \item Caused by the absence of the align attribute on pointers
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{This semester (4)}
+  \begin{center}
+    \includegraphics[width=1.0\linewidth]{align-diff.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Next semester}
+  \begin{itemize}
+    \item We continue to analyze the cause of the performance drops
+    \item We run the suite with -O3, -Os, -Oz 
+    \item We run the suite on AMD
+  \end{itemize}
+\end{frame}
+
+\end{document} 
