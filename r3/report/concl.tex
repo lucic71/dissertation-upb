@@ -1,0 +1,22 @@
+\section{Conclusions and Further work}
+
+In this semester we made significant progress on finding the impact of undefined
+behavior optimizations. We continued the work from the past semester on
+developing and exploring new flags that control the behavior of the compiler
+with regards to exploitation of undefined behavior. We used Alive2 to find new
+flags. We managed to find six more flags, resulting in 18 final flags that we
+use in our benchmarking infrastructure.
+
+We also started the performance experiments and solved issues regarding the
+stability of the results. Use used techniques such as NUMA pinning and CPU
+frequency lowering. This allowed us to have a deterministic and stable
+environment for our benchmarks.
+
+Finally, we also started analysing the performance regressions and already found
+hints of where the problem might lie in LLVM. However, we need to further analyze
+the issues in order to provide fixes that can recover the initial performance.
+
+In the next semester we plan to continue on analysing the performance regression
+with the data that is available now. We also plan to run the benchmarks with
+different optimization settings, such as -O3, -Os, -Oz. Finally, we plan to run
+the benchmarks on AMD to see how it compares to current data from Intel and arm.
